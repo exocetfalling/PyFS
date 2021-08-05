@@ -2,6 +2,7 @@
 from re import A
 import keyboard  # using module keyboard
 import numpy as np
+import math
 from datetime import datetime
 import os
 
@@ -34,6 +35,10 @@ a_total_vector = np.array([0, 0, 0])
 
 w_total_vector = np.array([0, 0, 0])
 
+w_x_velocity = 0
+w_y_velocity = 0
+w_z_velocity = 0
+
 a_elevator_pct = 0
 a_aileron_pct = 0
 a_rudder_pct = 0
@@ -53,12 +58,11 @@ while True:  # making a loop
 
     a_lift_force = (0.5 * a_air_density * a_airspeed_true * a_airspeed_true * c_wing_area * a_cl)
     a_cl = -0.007 * (a_alpha - 15) * (a_alpha - 15) + 1.7
-    a_lift_vector = ([0, a_lift_force, 0])
-    a_total_vector = np.sum([a_lift_vector + a_drag_vector + a_thrust_vector + a_weight_vector], 0)
-
-    print('Alpha:', round(a_alpha))
+    
+    print('Pitch:', round(a_pitch))
     print('Roll:', round(a_roll))
     print(a_total_vector)
+    print(w_total_vector)
     print(a_lift_force)
     print(a_cl)
     os.system('cls' if os.name == 'nt' else 'clear')
