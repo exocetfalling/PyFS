@@ -8,6 +8,7 @@ import os
 
 # Variables
 a_pitch = 0
+a_pitch_rad = 0
 a_roll = 0
 a_yaw = 0
 
@@ -63,23 +64,27 @@ while True:  # making a loop
     
     s_counter = s_counter + 1
 
-    if s_counter == 50:
+    if s_counter == 500:
         os.system('cls' if os.name == 'nt' else 'clear')
 
+        print('Pitch:', round(a_pitch))
         print('Heading:', round(a_hdg_deg))
         print('X Vel:', round(w_x_velocity))
         print('Y Vel:', round(w_y_velocity))
+        print('Z Vel:', round(w_z_velocity))
 
         s_counter = 0
 
 
     a_hdg_deg = (a_hdg_deg + 360) % 360
+    a_pitch = (a_pitch + 180) % 180
     a_hdg_rad = a_hdg_deg / 57.2958
+    a_pitch_rad = a_pitch / 57.2958
     a_lift_force = (0.5 * a_air_density * a_airspeed_true * a_airspeed_true * c_wing_area * a_cl)
     a_cl = -0.007 * (a_alpha - 15) * (a_alpha - 15) + 1.7
-    w_x_velocity = a_gnd_speed * math.sin(a_hdg_rad)
-    w_y_velocity = a_gnd_speed * math.cos(a_hdg_rad)
-
+    w_x_velocity = (a_gnd_speed * math.sin(a_hdg_rad)) * math.cos(a_pitch_rad)
+    w_y_velocity = (a_gnd_speed * math.cos(a_hdg_rad)) * math.cos(a_pitch_rad)
+    w_z_velocity = a_gnd_speed * math.sin(a_pitch_rad)
 
     """     
     a_lift_vector = ([0, a_lift_force, 0])
@@ -99,24 +104,24 @@ while True:  # making a loop
     #add control code here
     try:  # used try so that if user pressed other than the given key error will not be shown
         if keyboard.is_pressed('w'):  # if key 'w' is pressed 
-            a_alpha = a_alpha - 1
+            a_pitch = a_pitch - 0.1
             #print('You Pressed A Key!')
             #break  # finishing the loop
 
         if keyboard.is_pressed('a'):  # if key 'a' is pressed 
             #print('You Pressed A Key!')
             #break  # finishing the loop
-            a_roll = a_roll - 1
+            a_roll = a_roll - 0.1
             
         if keyboard.is_pressed('s'):  # if key 's' is pressed 
             #print('You Pressed A Key!')
             #break  # finishing the loop
-            a_alpha = a_alpha + 1
+            a_pitch = a_pitch + 0.1
 
         if keyboard.is_pressed('d'):  # if key 'd' is pressed 
             #print('You Pressed A Key!')
             #break  # finishing the loop
-            a_roll = a_roll + 1
+            a_roll = a_roll + 0.1
 
         if keyboard.is_pressed('e'):  # if key 'd' is pressed 
             #print('You Pressed A Key!')
