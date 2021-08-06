@@ -86,15 +86,26 @@ def blit_text(surface, text, pos, font, color=pygame.Color('black')):
         y += word_height  # Start on new row.
 
 
-text = "This is a really long sentence with a couple of breaks.\nSometimes it will break even if there isn't a break " \
-       "in the sentence, but that's because the text is too long to fit the screen.\nIt can look strange sometimes.\n" \
-       "This function doesn't check if the text is too high to fit on the height of the surface though, so sometimes " \
-       "text will disappear underneath the surface"; str(a_pitch)
+text = str(a_pitch)
 font = pygame.font.SysFont('Arial', 64)
 
 while True:
 
     dt = clock.tick(FPS) / 1000
+
+    a_hdg_deg = (a_hdg_deg + 360) % 360
+    a_pitch = (a_pitch + 180) % 180
+    a_hdg_rad = a_hdg_deg / 57.2958
+    a_pitch_rad = a_pitch / 57.2958
+    a_lift_force = (0.5 * a_air_density * a_airspeed_true * a_airspeed_true * c_wing_area * a_cl)
+    a_cl = -0.007 * (a_alpha - 15) * (a_alpha - 15) + 1.7
+    w_x_velocity = (a_gnd_speed * math.sin(a_hdg_rad)) * math.cos(a_pitch_rad)
+    w_y_velocity = (a_gnd_speed * math.cos(a_hdg_rad)) * math.cos(a_pitch_rad)
+    w_z_velocity = a_gnd_speed * math.sin(a_pitch_rad)
+
+    w_x_pos = w_x_pos + w_x_velocity * dt
+    w_y_pos = w_y_pos + w_y_velocity * dt
+    w_z_pos = w_z_pos + w_z_velocity * dt
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -109,8 +120,8 @@ while True:  # making a loop
     
     then = datetime.now()        # Random date in the past
     now  = datetime.now()                         # Now
-    delta_time = (now - then).total_seconds()      # Total number of seconds between now and then
-    #print(delta_time)
+    dt = (now - then).total_seconds()      # Total number of seconds between now and then
+    #print(dt)
     
     s_counter = s_counter + 1
 
@@ -124,22 +135,10 @@ while True:  # making a loop
     print('X Pos:', round(w_x_pos))
     print('Y Pos:', round(w_y_pos))
     print('Z Pos:', round(w_z_pos))
-    print('Delta Time:', delta_time)
+    print('Delta Time:', dt)
 
 
-    a_hdg_deg = (a_hdg_deg + 360) % 360
-    a_pitch = (a_pitch + 180) % 180
-    a_hdg_rad = a_hdg_deg / 57.2958
-    a_pitch_rad = a_pitch / 57.2958
-    a_lift_force = (0.5 * a_air_density * a_airspeed_true * a_airspeed_true * c_wing_area * a_cl)
-    a_cl = -0.007 * (a_alpha - 15) * (a_alpha - 15) + 1.7
-    w_x_velocity = (a_gnd_speed * math.sin(a_hdg_rad)) * math.cos(a_pitch_rad)
-    w_y_velocity = (a_gnd_speed * math.cos(a_hdg_rad)) * math.cos(a_pitch_rad)
-    w_z_velocity = a_gnd_speed * math.sin(a_pitch_rad)
 
-    w_x_pos = w_x_pos + w_x_velocity * delta_time
-    w_y_pos = w_y_pos + w_y_velocity * delta_time
-    w_z_pos = w_z_pos + w_z_velocity * delta_time
 
     """     
     a_lift_vector = ([0, a_lift_force, 0])
