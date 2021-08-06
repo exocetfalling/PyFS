@@ -33,6 +33,10 @@ w_x_velocity = 0
 w_y_velocity = 0
 w_z_velocity = 0
 
+w_x_pos = 0
+w_y_pos = 0
+w_z_pos = 0
+
 """ 
 a_lift_vector = np.array([0, 0, 0])
 a_drag_vector = np.array([0, 0, 0])
@@ -64,16 +68,17 @@ while True:  # making a loop
     
     s_counter = s_counter + 1
 
-    if s_counter == 500:
-        os.system('cls' if os.name == 'nt' else 'clear')
+    os.system('cls' if os.name == 'nt' else 'clear')
 
-        print('Pitch:', round(a_pitch))
-        print('Heading:', round(a_hdg_deg))
-        print('X Vel:', round(w_x_velocity))
-        print('Y Vel:', round(w_y_velocity))
-        print('Z Vel:', round(w_z_velocity))
-
-        s_counter = 0
+    print('Pitch:', round(a_pitch))
+    print('Heading:', round(a_hdg_deg))
+    print('X Vel:', round(w_x_velocity))
+    print('Y Vel:', round(w_y_velocity))
+    print('Z Vel:', round(w_z_velocity))
+    print('X Pos:', round(w_x_pos))
+    print('Y Pos:', round(w_y_pos))
+    print('Z Pos:', round(w_z_pos))
+    print('Delta Time:', delta_time)
 
 
     a_hdg_deg = (a_hdg_deg + 360) % 360
@@ -85,6 +90,10 @@ while True:  # making a loop
     w_x_velocity = (a_gnd_speed * math.sin(a_hdg_rad)) * math.cos(a_pitch_rad)
     w_y_velocity = (a_gnd_speed * math.cos(a_hdg_rad)) * math.cos(a_pitch_rad)
     w_z_velocity = a_gnd_speed * math.sin(a_pitch_rad)
+
+    w_x_pos = w_x_pos + w_x_velocity * delta_time
+    w_y_pos = w_y_pos + w_y_velocity * delta_time
+    w_z_pos = w_z_pos + w_z_velocity * delta_time
 
     """     
     a_lift_vector = ([0, a_lift_force, 0])
@@ -132,6 +141,8 @@ while True:  # making a loop
             #print('You Pressed A Key!')
             #break  # finishing the loop
             a_hdg_deg = a_hdg_deg - 0.1
+
+    
 
     except:
         break  # if user pressed a key other than the given key the loop will break
