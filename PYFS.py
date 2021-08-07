@@ -16,8 +16,8 @@ a_roll_rad = 0
 
 a_airspeed_indicated = 0
 a_alt = 0
-a_hdg_rad = 0
-a_hdg_deg = 0
+a_trk_rad = 0
+a_trk_deg = 0
 
 a_alpha = 0
 a_beta = 0
@@ -67,7 +67,7 @@ screen = pygame.display.set_mode(SIZE, pygame.RESIZABLE)
 clock = pygame.time.Clock()
 
 # Functions
-def Calc_World_Velocities(axis, total_vel, angle_horizontal, angle_vertical): 
+def Calc_Velocity_World(axis, total_vel, angle_horizontal, angle_vertical): 
     if axis == 'x':
         return (total_vel * math.sin(angle_horizontal)) * math.cos(angle_vertical)
     if axis == 'y':
@@ -75,11 +75,17 @@ def Calc_World_Velocities(axis, total_vel, angle_horizontal, angle_vertical):
     if axis == 'z':
         return (total_vel * math.sin(angle_vertical)) * math.cos(angle_horizontal)
 
-def Calc_Moment_Of_Force():
-    pass
+def Calc_Force_Moment(force_magnitude, distance_from_pivot):
+    return force_magnitude * distance_from_pivot
 
-def Calc_Force_Acc():
-    pass
+def Calc_Force_Acc(force_magnitude, mass_kg):
+    return force_magnitude / mass_kg
+
+def Calc_Lift_Coeff(angle_rad):
+    return -0.007 * (angle_rad - 15) * (angle_rad - 15) + 1.7
+
+def Calc_Drag_Coeff(angle_rad):
+    return math.sin(angle_rad)
 
 def blit_text(surface, text, pos, font, color=pygame.Color('black')):
     words = [word.split(' ') for word in text.splitlines()]  # 2D array where each row is a list of words.
@@ -100,18 +106,23 @@ def blit_text(surface, text, pos, font, color=pygame.Color('black')):
 
 
 
-font = pygame.font.SysFont('Arial', 30)
+font = pygame.font.SysFont('Courier', 16)
 
 while True:
 
     dt = clock.tick(FPS) / 1000
-    text = 'X Pos ' + str(w_x_pos) + '\nY Pos: ' + str(w_y_pos) + '\nZ Pos: ' + str(w_z_pos) + '\nHDG: ' + str(a_hdg_deg)
-    a_hdg_deg = (a_hdg_deg + 360) % 360
+    debug_text = \
+        '\nX Pos: ' + str(w_x_pos) + \
+        '\nY Pos: ' + str(w_y_pos) + \
+        '\nZ Pos: ' + str(w_z_pos) + \
+        '\nFPA: ' + str(a_fpa_deg) + \
+        '\nHDG: ' + str(a_trk_deg)
+    a_trk_deg = (a_trk_deg + 360) % 360
     a_fpa_deg = (a_fpa_deg + 180) % 180
-    a_hdg_rad = a_hdg_deg / 57.2958
+    a_trk_rad = a_trk_deg / 57.2958
     a_fpa_rad = a_fpa_deg / 57.2958
     a_lift_force = (0.5 * a_air_density * a_airspeed_true * a_airspeed_true * c_wing_area * a_cl)
-    a_cl = -0.007 * (a_alpha - 15) * (a_alpha - 15) + 1.7
+    a_cl = Calc_Lift_Coeff(a_alpha)
     
     """     
     w_x_velocity = (a_gnd_speed * math.sin(a_hdg_rad)) * math.cos(a_fpa_rad)
@@ -119,9 +130,9 @@ while True:
     w_z_velocity = a_gnd_speed * math.sin(a_fpa_rad)
 
     """
-    w_x_velocity = Calc_World_Velocities('x', a_gnd_speed, a_hdg_rad, a_fpa_rad)
-    w_y_velocity = Calc_World_Velocities('y', a_gnd_speed, a_hdg_rad, a_fpa_rad)
-    w_z_velocity = Calc_World_Velocities('z', a_gnd_speed, a_roll_rad, a_fpa_rad)
+    w_x_velocity = Calc_Velocity_World('x', a_gnd_speed, a_trk_rad, a_fpa_rad)
+    w_y_velocity = Calc_Velocity_World('y', a_gnd_speed, a_trk_rad, a_fpa_rad)
+    w_z_velocity = Calc_Velocity_World('z', a_gnd_speed, a_roll_rad, a_fpa_rad)
 
     w_x_pos = w_x_pos + w_x_velocity * dt
     w_y_pos = w_y_pos + w_y_velocity * dt
@@ -136,17 +147,17 @@ while True:
         a_fpa_deg = a_fpa_deg + 10 * dt
 
     if keys[pygame.K_a]:
-        a_hdg_deg = a_hdg_deg - 10 * dt
+        a_trk_deg = a_trk_deg - 10 * dt
 
     if keys[pygame.K_d]:
-        a_hdg_deg = a_hdg_deg + 10 * dt
+        a_trk_deg = a_trk_deg + 10 * dt
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             quit()
 
     screen.fill(pygame.Color('white'))
-    blit_text(screen, text, (20, 20), font)
+    blit_text(screen, debug_text, (20, 20), font)
     pygame.display.update()
 
 # Main loop
