@@ -86,13 +86,13 @@ def blit_text(surface, text, pos, font, color=pygame.Color('black')):
         y += word_height  # Start on new row.
 
 
-text = str(a_pitch)
-font = pygame.font.SysFont('Arial', 64)
+
+font = pygame.font.SysFont('Arial', 30)
 
 while True:
 
     dt = clock.tick(FPS) / 1000
-
+    text = 'X Pos ' + str(w_x_pos) + '\nY Pos: ' + str(w_y_pos) + '\nZ Pos: ' + str(w_z_pos) + '\nHDG: ' + str(a_hdg_deg)
     a_hdg_deg = (a_hdg_deg + 360) % 360
     a_pitch = (a_pitch + 180) % 180
     a_hdg_rad = a_hdg_deg / 57.2958
@@ -106,6 +106,13 @@ while True:
     w_x_pos = w_x_pos + w_x_velocity * dt
     w_y_pos = w_y_pos + w_y_velocity * dt
     w_z_pos = w_z_pos + w_z_velocity * dt
+
+    keys=pygame.key.get_pressed()
+    if keys[pygame.K_LEFT]:
+        a_hdg_deg = a_hdg_deg - 10 * dt
+
+    if keys[pygame.K_RIGHT]:
+        a_hdg_deg = a_hdg_deg + 10 * dt
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
