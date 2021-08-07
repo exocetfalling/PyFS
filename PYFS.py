@@ -9,10 +9,10 @@ import pygame
 import pygame.freetype  # Import the freetype module.
 
 # Variables
-a_pitch = 0
-a_pitch_rad = 0
-a_roll = 0
-a_yaw = 0
+a_fpa_deg = 0
+a_fpa_rad = 0
+a_roll_deg = 0
+a_roll_rad = 0
 
 a_airspeed_indicated = 0
 a_alt = 0
@@ -60,13 +60,26 @@ c_aileron_area = 0
 s_fps = 0
 s_counter = 0
 
-
 pygame.init()
 SIZE = WIDTH, HEIGHT = (1024, 720)
 FPS = 30
 screen = pygame.display.set_mode(SIZE, pygame.RESIZABLE)
 clock = pygame.time.Clock()
 
+# Functions
+def Calc_World_Velocities(axis, total_vel, angle_horizontal, angle_vertical): 
+    if axis == 'x':
+        return (total_vel * math.sin(angle_horizontal)) * math.cos(angle_vertical)
+    if axis == 'y':
+        return (total_vel * math.cos(angle_horizontal)) * math.cos(angle_vertical)
+    if axis == 'z':
+        return (total_vel * math.sin(angle_vertical)) * math.cos(angle_horizontal)
+
+def Calc_Moment_Of_Force():
+    pass
+
+def Calc_Force_Acc():
+    pass
 
 def blit_text(surface, text, pos, font, color=pygame.Color('black')):
     words = [word.split(' ') for word in text.splitlines()]  # 2D array where each row is a list of words.
@@ -94,14 +107,21 @@ while True:
     dt = clock.tick(FPS) / 1000
     text = 'X Pos ' + str(w_x_pos) + '\nY Pos: ' + str(w_y_pos) + '\nZ Pos: ' + str(w_z_pos) + '\nHDG: ' + str(a_hdg_deg)
     a_hdg_deg = (a_hdg_deg + 360) % 360
-    a_pitch = (a_pitch + 180) % 180
+    a_fpa_deg = (a_fpa_deg + 180) % 180
     a_hdg_rad = a_hdg_deg / 57.2958
-    a_pitch_rad = a_pitch / 57.2958
+    a_fpa_rad = a_fpa_deg / 57.2958
     a_lift_force = (0.5 * a_air_density * a_airspeed_true * a_airspeed_true * c_wing_area * a_cl)
     a_cl = -0.007 * (a_alpha - 15) * (a_alpha - 15) + 1.7
-    w_x_velocity = (a_gnd_speed * math.sin(a_hdg_rad)) * math.cos(a_pitch_rad)
-    w_y_velocity = (a_gnd_speed * math.cos(a_hdg_rad)) * math.cos(a_pitch_rad)
-    w_z_velocity = a_gnd_speed * math.sin(a_pitch_rad)
+    
+    """     
+    w_x_velocity = (a_gnd_speed * math.sin(a_hdg_rad)) * math.cos(a_fpa_rad)
+    w_y_velocity = (a_gnd_speed * math.cos(a_hdg_rad)) * math.cos(a_fpa_rad)
+    w_z_velocity = a_gnd_speed * math.sin(a_fpa_rad)
+
+    """
+    w_x_velocity = Calc_World_Velocities('x', a_gnd_speed, a_hdg_rad, a_fpa_rad)
+    w_y_velocity = Calc_World_Velocities('y', a_gnd_speed, a_hdg_rad, a_fpa_rad)
+    w_z_velocity = Calc_World_Velocities('z', a_gnd_speed, a_roll_rad, a_fpa_rad)
 
     w_x_pos = w_x_pos + w_x_velocity * dt
     w_y_pos = w_y_pos + w_y_velocity * dt
@@ -110,7 +130,10 @@ while True:
     keys=pygame.key.get_pressed()
 
     if keys[pygame.K_w]:
-        a_hdg_deg = a_hdg_deg - 10 * dt
+        a_fpa_deg = a_fpa_deg - 10 * dt
+
+    if keys[pygame.K_s]:
+        a_fpa_deg = a_fpa_deg + 10 * dt
 
     if keys[pygame.K_a]:
         a_hdg_deg = a_hdg_deg - 10 * dt
@@ -138,7 +161,7 @@ while True:  # making a loop
 
     os.system('cls' if os.name == 'nt' else 'clear')
 
-    print('Pitch:', round(a_pitch))
+    print('Pitch:', round(a_fpa_deg))
     print('Heading:', round(a_hdg_deg))
     print('X Vel:', round(w_x_velocity))
     print('Y Vel:', round(w_y_velocity))
@@ -169,7 +192,7 @@ while True:  # making a loop
     #add control code here
     try:  # used try so that if user pressed other than the given key error will not be shown
         if keyboard.is_pressed('w'):  # if key 'w' is pressed 
-            a_pitch = a_pitch - 0.1
+            a_fpa_deg = a_fpa_deg - 0.1
             #print('You Pressed A Key!')
             #break  # finishing the loop
 
@@ -181,7 +204,7 @@ while True:  # making a loop
         if keyboard.is_pressed('s'):  # if key 's' is pressed 
             #print('You Pressed A Key!')
             #break  # finishing the loop
-            a_pitch = a_pitch + 0.1
+            a_fpa_deg = a_fpa_deg + 0.1
 
         if keyboard.is_pressed('d'):  # if key 'd' is pressed 
             #print('You Pressed A Key!')
