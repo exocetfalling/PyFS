@@ -108,10 +108,14 @@ while True:
     w_z_pos = w_z_pos + w_z_velocity * dt
 
     keys=pygame.key.get_pressed()
-    if keys[pygame.K_LEFT]:
+
+    if keys[pygame.K_w]:
         a_hdg_deg = a_hdg_deg - 10 * dt
 
-    if keys[pygame.K_RIGHT]:
+    if keys[pygame.K_a]:
+        a_hdg_deg = a_hdg_deg - 10 * dt
+
+    if keys[pygame.K_d]:
         a_hdg_deg = a_hdg_deg + 10 * dt
 
     for event in pygame.event.get():
