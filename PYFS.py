@@ -21,6 +21,14 @@ a_phi_deg = 0
 a_phi_rad = 0
 a_radial_velocity = 50
 
+a_accel_x = 0
+a_accel_y = 0
+a_accel_z = 0
+
+a_angular_accel_x = 0
+a_angular_accel_y = 0
+a_angular_accel_z = 0
+
 a_airspeed_indicated = 0
 a_alt = 0
 
@@ -43,11 +51,13 @@ w_x_velocity = 0
 w_y_velocity = 0
 w_z_velocity = 0
 
+w_vec_velocity = [0, 0, 0]
+
 w_x_pos = 0
 w_y_pos = 0
 w_z_pos = 0
 
-w_pos = [0, 0, 0]
+w_vec_pos = [0, 0, 0]
 
 """ 
 a_lift_vector = np.array([0, 0, 0])
@@ -182,6 +192,8 @@ while True:
     w_x_velocity = Calc_Velocity_World('x', a_radial_velocity, a_phi_rad, a_theta_rad)
     w_y_velocity = Calc_Velocity_World('y', a_radial_velocity, a_phi_rad, a_theta_rad)
     w_z_velocity = Calc_Velocity_World('z', a_radial_velocity, a_roll_rad, a_theta_rad)
+
+    w_vec_velocity = [w_x_velocity, w_y_velocity, w_z_velocity]
 
     w_x_pos = w_x_pos + w_x_velocity * dt
     w_y_pos = w_y_pos + w_y_velocity * dt
