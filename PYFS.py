@@ -47,6 +47,8 @@ w_x_pos = 0
 w_y_pos = 0
 w_z_pos = 0
 
+w_pos = [0, 0, 0]
+
 """ 
 a_lift_vector = np.array([0, 0, 0])
 a_drag_vector = np.array([0, 0, 0])
@@ -174,7 +176,7 @@ while True:
 
     a_phi_rad = Convert_Angle_Deg_To_Rad(a_phi_deg)
     a_theta_rad = Convert_Angle_Deg_To_Rad(a_theta_deg)
-    a_lift_force = (0.5 * a_air_density * a_airspeed_true * a_airspeed_true * c_wing_area * a_cl)
+    a_lift_force = (0.5 * a_air_density * a_airspeed_true * a_airspeed_true * c_area_wing * a_cl)
     a_cl = Calc_Lift_Coeff(a_alpha)
 
     w_x_velocity = Calc_Velocity_World('x', a_radial_velocity, a_phi_rad, a_theta_rad)
