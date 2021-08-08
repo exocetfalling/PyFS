@@ -89,7 +89,7 @@ def Calc_Force_Moment(force_magnitude, distance_from_pivot):
 def Calc_Force_Acc(force_magnitude, mass_kg):
     return force_magnitude / mass_kg
 
-def Calc_Integralt(value, time_interval):
+def Calc_Integral(value, time_interval):
     return value * time_interval
 
 def Calc_Lift_Coeff(angle_alpha_rad):
