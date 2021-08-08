@@ -90,6 +90,15 @@ def Calc_Force_Acc(force_magnitude, mass_kg):
     return force_magnitude / mass_kg
 
 def Calc_Lift_Coeff(angle_alpha_rad):
+    a = -0.520870722846
+    b = 0
+    c = -0.520870722846
+
+    x1 = -math.pi
+    y1 = 0
+    x2 = -math.pi/12
+    y2 = -1.5
+
     if ((angle_alpha_rad > (-math.pi)) and (angle_alpha_rad <= (-math.pi/12))):
         pass
     if ((angle_alpha_rad > (-math.pi/12)) and (angle_alpha_rad <= (math.pi/12))):
@@ -141,8 +150,8 @@ while True:
 
     a_phi_rad = Convert_Angle_Deg_To_Rad(a_phi_deg)
     a_theta_rad = Convert_Angle_Deg_To_Rad(a_theta_deg)
-    a_lift_force = (0.5 * a_air_density * a_airspeed_true * a_airspeed_true * c_wing_area * a_cl)
-    a_cl = Calc_Lift_Coeff(a_alpha)
+    #a_lift_force = (0.5 * a_air_density * a_airspeed_true * a_airspeed_true * c_wing_area * a_cl)
+    #a_cl = Calc_Lift_Coeff(a_alpha)
     
     """     
     w_x_velocity = (a_gnd_speed * math.sin(a_hdg_rad)) * math.cos(a_fpa_rad)
@@ -179,81 +188,3 @@ while True:
     screen.fill(pygame.Color('white'))
     blit_text(screen, debug_text, (20, 20), font)
     pygame.display.update()
-
-# Main loop
-while True:  # making a loop
-    
-    then = datetime.now()        # Random date in the past
-    now  = datetime.now()                         # Now
-    dt = (now - then).total_seconds()      # Total number of seconds between now and then
-    #print(dt)
-    
-    s_counter = s_counter + 1
-
-    os.system('cls' if os.name == 'nt' else 'clear')
-
-    print('Pitch:', round(a_fpa_deg))
-    print('Heading:', round(a_hdg_deg))
-    print('X Vel:', round(w_x_velocity))
-    print('Y Vel:', round(w_y_velocity))
-    print('Z Vel:', round(w_z_velocity))
-    print('X Pos:', round(w_x_pos))
-    print('Y Pos:', round(w_y_pos))
-    print('Z Pos:', round(w_z_pos))
-    print('Delta Time:', dt)
-
-
-
-
-    """     
-    a_lift_vector = ([0, a_lift_force, 0])
-    a_total_vector = np.sum([a_lift_vector + a_drag_vector + a_thrust_vector + a_weight_vector], 0)
-    """
-    
-
-    """ 
-    print(a_total_vector)
-    print(a_lift_force)
-    print(a_cl)
-
-    """
-
-
-    
-    #add control code here
-    try:  # used try so that if user pressed other than the given key error will not be shown
-        if keyboard.is_pressed('w'):  # if key 'w' is pressed 
-            a_fpa_deg = a_fpa_deg - 0.1
-            #print('You Pressed A Key!')
-            #break  # finishing the loop
-
-        if keyboard.is_pressed('a'):  # if key 'a' is pressed 
-            #print('You Pressed A Key!')
-            #break  # finishing the loop
-            a_roll = a_roll - 0.1
-            
-        if keyboard.is_pressed('s'):  # if key 's' is pressed 
-            #print('You Pressed A Key!')
-            #break  # finishing the loop
-            a_fpa_deg = a_fpa_deg + 0.1
-
-        if keyboard.is_pressed('d'):  # if key 'd' is pressed 
-            #print('You Pressed A Key!')
-            #break  # finishing the loop
-            a_roll = a_roll + 0.1
-
-        if keyboard.is_pressed('e'):  # if key 'd' is pressed 
-            #print('You Pressed A Key!')
-            #break  # finishing the loop
-            a_hdg_deg = a_hdg_deg + 0.1
-
-        if keyboard.is_pressed('q'):  # if key 'd' is pressed 
-            #print('You Pressed A Key!')
-            #break  # finishing the loop
-            a_hdg_deg = a_hdg_deg - 0.1
-
-    
-
-    except:
-        break  # if user pressed a key other than the given key the loop will break
-
