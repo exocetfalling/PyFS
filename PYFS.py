@@ -61,12 +61,25 @@ a_elevator_pct = 0
 a_aileron_pct = 0
 a_rudder_pct = 0
 
-c_wing_area = 50
-c_elevator_area = 0
-c_aileron_area = 0
+# Lengths in m
+c_dimensions_aircraft_length = 10
+c_dimensions_aircraft_width = 20
+c_dimensions_aircraft_height = 4
 
-s_fps = 0
-s_counter = 0
+# Areas in m^2
+c_area_wing = 50
+c_area_elevator = 10
+c_area_rudder = 5
+
+# Masses in kg
+c_mass_aircraft = 1000
+
+# MOIs in kg m^2
+# Using formula:
+# MOI = 1/12 * mass * (length)^2
+c_moi_pitch = 8333
+c_moi_roll = 33333
+c_moi_yaw = 8333
 
 pygame.init()
 SIZE = WIDTH, HEIGHT = (1024, 720)
