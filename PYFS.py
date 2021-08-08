@@ -89,22 +89,33 @@ def Calc_Force_Moment(force_magnitude, distance_from_pivot):
 def Calc_Force_Acc(force_magnitude, mass_kg):
     return force_magnitude / mass_kg
 
+def Calc_Integralt(value, time_interval):
+    return value * time_interval
+
 def Calc_Lift_Coeff(angle_alpha_rad):
     a = -0.520870722846
-    b = 0
+    b = 5.72957795131
     c = -0.520870722846
 
     x1 = -math.pi
     y1 = 0
     x2 = -math.pi/12
     y2 = -1.5
+    x3 = -math.pi/12
+    y3 = 1.5
+    x4 = math.pi
+    y4 = 0
+
+
 
     if ((angle_alpha_rad > (-math.pi)) and (angle_alpha_rad <= (-math.pi/12))):
-        pass
+        return (a * (angle_alpha_rad - x1) + y1)
+    
     if ((angle_alpha_rad > (-math.pi/12)) and (angle_alpha_rad <= (math.pi/12))):
-        pass
+        return (b * (angle_alpha_rad - x2) + y2)
+
     if ((angle_alpha_rad > (math.pi/12)) and (angle_alpha_rad <= (math.pi))):
-        pass
+        return (c * (angle_alpha_rad - x3) + y3)
 
 def Calc_Drag_Coeff(angle_rad):
     return math.sin(angle_rad)
@@ -150,8 +161,8 @@ while True:
 
     a_phi_rad = Convert_Angle_Deg_To_Rad(a_phi_deg)
     a_theta_rad = Convert_Angle_Deg_To_Rad(a_theta_deg)
-    #a_lift_force = (0.5 * a_air_density * a_airspeed_true * a_airspeed_true * c_wing_area * a_cl)
-    #a_cl = Calc_Lift_Coeff(a_alpha)
+    a_lift_force = (0.5 * a_air_density * a_airspeed_true * a_airspeed_true * c_wing_area * a_cl)
+    a_cl = Calc_Lift_Coeff(a_alpha)
 
     w_x_velocity = Calc_Velocity_World('x', a_radial_velocity, a_phi_rad, a_theta_rad)
     w_y_velocity = Calc_Velocity_World('y', a_radial_velocity, a_phi_rad, a_theta_rad)
