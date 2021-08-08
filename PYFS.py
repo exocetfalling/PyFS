@@ -164,10 +164,10 @@ while True:
     keys=pygame.key.get_pressed()
 
     if keys[pygame.K_w]:
-        a_theta_deg = a_theta_deg - 10 * dt
+        a_theta_deg = a_theta_deg + 10 * dt
 
     if keys[pygame.K_s]:
-        a_theta_deg = a_theta_deg + 10 * dt
+        a_theta_deg = a_theta_deg - 10 * dt
 
     if keys[pygame.K_a]:
         a_phi_deg = a_phi_deg - 10 * dt
