@@ -59,6 +59,17 @@ a_lift_force_tailplane_vertical = 0
 
 a_drag_force_wing = 0
 
+# Axes are defined as:
+# For aircraft:
+# X: left -ve, right +ve
+# Y: aft -ve, right +ve
+# Z: down -ve, up +ve
+
+# For world:
+# X: west -ve, east +ve
+# Y: south -ve, north +ve
+# Z: down -ve, up +ve
+
 w_x_velocity = 0
 w_y_velocity = 0
 w_z_velocity = 0
@@ -71,9 +82,9 @@ w_z_pos = 0
 
 w_vec_pos = [0, 0, 0]
 
-a_elevator_pct = 0
-a_aileron_pct = 0
-a_rudder_pct = 0
+a_elevator_angle_rad = 0
+a_aileron_angle_rad = 0
+a_rudder_angle_rad = 0
 
 # Lengths in m
 c_dimensions_aircraft_length = 10
@@ -122,11 +133,11 @@ def Calc_Velocity_World(axis, total_vel, angle_azimuthal, angle_polar):
         return (total_vel * math.cos(angle_polar)) * math.cos(angle_azimuthal)
 
 def Calc_Force_Angular_Acc(axis, force_magnitude, distance_from_pivot):
-    if (axis == 'pitch'):
+    if (axis == 'x'):
         return c_moi_pitch * force_magnitude * distance_from_pivot
-    if (axis == 'roll'):
+    if (axis == 'y'):
         return c_moi_roll * force_magnitude * distance_from_pivot
-    if (axis == 'yaw'):
+    if (axis == 'z'):
         return c_moi_yaw * force_magnitude * distance_from_pivot
 
 def Calc_Angular_Vel():
