@@ -1,10 +1,6 @@
 # Imports
-from re import A
-import keyboard  # using module keyboard
-import numpy as np
+
 import math
-from datetime import datetime
-import os
 import pygame
 import pygame.freetype  # Import the freetype module.
 
@@ -35,17 +31,33 @@ a_alt = 0
 a_roll_deg = 0
 a_roll_rad = 0
 
-a_alpha = 0
-a_beta = 0
+a_alpha_rad = 0
+a_beta_rad = 0
 
-a_cl = 0
-a_cd = 0
+a_cl_wing = 0
+a_cl_tailplane_horizontal = 0
+a_cl_tailplane_vertical = 0
+
+a_cl_elevator = 0
+a_cl_aileron_left = 0
+a_cl_aileron_right = 0
+a_cl_rudder = 0
+
+a_cd_wing = 0
 a_dynp = 0
 a_air_density = 1.3
 a_airspeed_true = 50
 
-a_lift_force = 0
-a_drag_force = 0
+a_lift_force_elevator = 0
+a_lift_force_aileron_left = 0
+a_lift_force_aileron_right = 0
+a_lift_force_rudder = 0
+
+a_lift_force_wing = 0
+a_lift_force_tailplane_horizontal = 0
+a_lift_force_tailplane_vertical = 0
+
+a_drag_force_wing = 0
 
 w_x_velocity = 0
 w_y_velocity = 0
@@ -59,16 +71,6 @@ w_z_pos = 0
 
 w_vec_pos = [0, 0, 0]
 
-""" 
-a_lift_vector = np.array([0, 0, 0])
-a_drag_vector = np.array([0, 0, 0])
-a_thrust_vector = np.array([0, 0 ,0])
-a_weight_vector = np.array([0, 0, 0])
-a_total_vector = np.array([0, 0, 0])
-
-w_total_vector = np.array([0, 0, 0])
- """
-
 a_elevator_pct = 0
 a_aileron_pct = 0
 a_rudder_pct = 0
@@ -78,10 +80,21 @@ c_dimensions_aircraft_length = 10
 c_dimensions_aircraft_width = 20
 c_dimensions_aircraft_height = 4
 
+c_wing_incidence = math.pi/60
+
+c_position_tailplane_horizontal = -9
+c_position_tailplane_vertical = -9
+c_position_wing = 0
+c_position_elevator = -10
+c_position_aileron_left = -18
+c_position_aileron_right = 18
+c_position_rudder = -10
+
 # Areas in m^2
 c_area_wing = 50
+c_area_aileron = 10
 c_area_elevator = 10
-c_area_rudder = 5
+c_area_rudder = 10
 
 # Masses in kg
 c_mass_aircraft = 1000
@@ -108,8 +121,16 @@ def Calc_Velocity_World(axis, total_vel, angle_azimuthal, angle_polar):
     if axis == 'z':
         return (total_vel * math.cos(angle_polar)) * math.cos(angle_azimuthal)
 
-def Calc_Force_Moment(force_magnitude, distance_from_pivot):
-    return force_magnitude * distance_from_pivot
+def Calc_Force_Angular_Acc(axis, force_magnitude, distance_from_pivot):
+    if (axis == 'pitch'):
+        return c_moi_pitch * force_magnitude * distance_from_pivot
+    if (axis == 'roll'):
+        return c_moi_roll * force_magnitude * distance_from_pivot
+    if (axis == 'yaw'):
+        return c_moi_yaw * force_magnitude * distance_from_pivot
+
+def Calc_Angular_Vel():
+    pass
 
 def Calc_Force_Acc(force_magnitude, mass_kg):
     return force_magnitude / mass_kg
@@ -130,7 +151,6 @@ def Calc_Lift_Coeff(angle_alpha_rad):
     y3 = 1.5
     x4 = math.pi
     y4 = 0
-
 
 
     if ((angle_alpha_rad > (-math.pi)) and (angle_alpha_rad <= (-math.pi/12))):
@@ -186,8 +206,8 @@ while True:
 
     a_phi_rad = Convert_Angle_Deg_To_Rad(a_phi_deg)
     a_theta_rad = Convert_Angle_Deg_To_Rad(a_theta_deg)
-    a_lift_force = (0.5 * a_air_density * a_airspeed_true * a_airspeed_true * c_area_wing * a_cl)
-    a_cl = Calc_Lift_Coeff(a_alpha)
+    a_lift_force_wing = (0.5 * a_air_density * a_airspeed_true * a_airspeed_true * c_area_wing * a_cl_wing)
+    a_cl_wing = Calc_Lift_Coeff(a_alpha_rad)
 
     w_x_velocity = Calc_Velocity_World('x', a_radial_velocity, a_phi_rad, a_theta_rad)
     w_y_velocity = Calc_Velocity_World('y', a_radial_velocity, a_phi_rad, a_theta_rad)
