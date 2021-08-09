@@ -176,6 +176,12 @@ def Calc_Lift_Coeff(angle_alpha_rad):
 def Calc_Drag_Coeff(angle_rad):
     return math.sin(angle_rad)
 
+def Calc_Force_Lift():
+    pass
+
+def Calc_Force_Drag():
+    pass
+
 def Convert_Angle_Rad_To_Deg(angle_rad):
     return angle_rad * 57.2958
 
