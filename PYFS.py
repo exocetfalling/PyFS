@@ -25,6 +25,14 @@ a_angular_accel_x = 0
 a_angular_accel_y = 0
 a_angular_accel_z = 0
 
+a_angular_vel_x = 0
+a_angular_vel_y = 0
+a_angular_vel_z = 0
+
+a_angular_displacement_x = 0
+a_angular_displacement_y = 0
+a_angular_displacement_z = 0
+
 a_airspeed_indicated = 0
 a_alt = 0
 
@@ -103,9 +111,11 @@ c_position_rudder = -10
 
 # Areas in m^2
 c_area_wing = 50
-c_area_aileron = 10
-c_area_elevator = 10
-c_area_rudder = 10
+c_area_tailplane_horizontal = 2
+c_area_tailplane_vertical = 2
+c_area_aileron = 0.5
+c_area_elevator = 0.5
+c_area_rudder = 0.5
 
 # Masses in kg
 c_mass_aircraft = 1000
@@ -224,8 +234,11 @@ while True:
     a_phi_rad = Convert_Angle_Deg_To_Rad(a_phi_deg)
     a_theta_rad = Convert_Angle_Deg_To_Rad(a_theta_deg)
     a_lift_force_wing = Calc_Force_Lift(a_air_density, a_airspeed_true, c_area_wing, (Calc_Lift_Coeff(a_alpha_rad + c_wing_incidence)))
-    a_lift_force_elevator = Calc_Force_Lift(a_air_density, a_airspeed_true, c_area_elevator, (Calc_Lift_Coeff(a_alpha_rad)))
-    a_cl_wing = Calc_Lift_Coeff(a_alpha_rad)
+    a_lift_force_tailplane_horizontal = Calc_Force_Lift(a_air_density, a_airspeed_true, c_area_tailplane_horizontal, (Calc_Lift_Coeff(a_alpha_rad)))
+    a_lift_force_tailplane_vertical = Calc_Force_Lift(a_air_density, a_airspeed_true, c_area_tailplane_vertical, (Calc_Lift_Coeff(a_beta_rad)))
+    
+    a_angular_accel_x = Calc_Force_Angular_Acc('x', a_lift_force_tailplane_horizontal, c_position_tailplane_horizontal) + Calc_Force_Angular_Acc('x', a_lift_force_elevator, c_position_elevator)
+
 
     w_x_velocity = Calc_Velocity_World('x', a_radial_velocity, a_phi_rad, a_theta_rad)
     w_y_velocity = Calc_Velocity_World('y', a_radial_velocity, a_phi_rad, a_theta_rad)
