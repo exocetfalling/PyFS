@@ -223,7 +223,7 @@ while True:
 
     a_phi_rad = Convert_Angle_Deg_To_Rad(a_phi_deg)
     a_theta_rad = Convert_Angle_Deg_To_Rad(a_theta_deg)
-    a_lift_force_wing = (0.5 * a_air_density * a_airspeed_true * a_airspeed_true * c_area_wing * a_cl_wing)
+    a_lift_force_wing = (0.5 * a_air_density * math.pow(a_airspeed_true, 2) * c_area_wing * a_cl_wing)
     a_cl_wing = Calc_Lift_Coeff(a_alpha_rad)
 
     w_x_velocity = Calc_Velocity_World('x', a_radial_velocity, a_phi_rad, a_theta_rad)
