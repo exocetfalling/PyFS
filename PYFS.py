@@ -238,7 +238,12 @@ while True:
     a_lift_force_tailplane_vertical = Calc_Force_Lift(a_air_density, a_airspeed_true, c_area_tailplane_vertical, (Calc_Lift_Coeff(a_beta_rad)))
     
     a_angular_accel_x = Calc_Force_Angular_Acc('x', a_lift_force_tailplane_horizontal, c_position_tailplane_horizontal) + Calc_Force_Angular_Acc('x', a_lift_force_elevator, c_position_elevator)
+    a_angular_accel_y = Calc_Force_Angular_Acc('y', a_lift_force_aileron_left, c_position_aileron_left) + Calc_Force_Angular_Acc('y', a_lift_force_aileron_right, c_position_aileron_right)
+    a_angular_accel_z = Calc_Force_Angular_Acc('z', a_lift_force_tailplane_vertical, c_position_tailplane_vertical) + Calc_Force_Angular_Acc('x', a_lift_force_rudder, c_position_rudder)
 
+    a_angular_vel_x = Calc_Integral(a_angular_accel_x, dt)
+    a_angular_vel_y = Calc_Integral(a_angular_accel_y, dt)
+    a_angular_vel_z = Calc_Integral(a_angular_accel_z, dt)
 
     w_x_velocity = Calc_Velocity_World('x', a_radial_velocity, a_phi_rad, a_theta_rad)
     w_y_velocity = Calc_Velocity_World('y', a_radial_velocity, a_phi_rad, a_theta_rad)
