@@ -71,6 +71,8 @@ a_lift_force_tailplane_vertical = 0
 
 a_drag_force_wing = 0
 
+a_thrust_force = 0
+
 # Axes are defined as:
 # For aircraft:
 # X: left -ve, right +ve
@@ -148,11 +150,11 @@ def Calc_Velocity_World(axis, total_vel, angle_azimuthal, angle_polar):
 
 def Calc_Force_Angular_Acc(axis, force_magnitude, distance_from_pivot):
     if (axis == 'x'):
-        return c_moi_pitch * force_magnitude * distance_from_pivot
+        return force_magnitude * distance_from_pivot / c_moi_pitch
     if (axis == 'y'):
-        return c_moi_roll * force_magnitude * distance_from_pivot
+        return force_magnitude * distance_from_pivot / c_moi_roll
     if (axis == 'z'):
-        return c_moi_yaw * force_magnitude * distance_from_pivot
+        return force_magnitude * distance_from_pivot / c_moi_yaw
 
 def Calc_Angular_Vel():
     pass
@@ -188,7 +190,7 @@ def Calc_Lift_Coeff(angle_alpha_rad):
         return (c * (angle_alpha_rad - x3) + y3)
 
 def Calc_Drag_Coeff(angle_rad):
-    return math.sin(angle_rad)
+    return 0.2 * math.sin(angle_rad)
 
 def Calc_Force_Lift(air_density, airspeed_true, surface_area, lift_coeff):
     return 0.5 * air_density * math.pow(airspeed_true, 2) * surface_area * lift_coeff
@@ -237,12 +239,15 @@ while True:
 
     a_phi_rad = Convert_Angle_Deg_To_Rad(a_phi_deg)
     a_theta_rad = Convert_Angle_Deg_To_Rad(a_theta_deg)
+
+    a_roll_rad = ((a_roll_rad + (2 * math.pi)) % (2 * math.pi)) - (math.pi)
+
     a_lift_force_wing = Calc_Force_Lift(a_air_density, a_airspeed_true, c_area_wing, (Calc_Lift_Coeff(a_alpha_rad + c_wing_incidence)))
     a_lift_force_tailplane_horizontal = Calc_Force_Lift(a_air_density, a_airspeed_true, c_area_tailplane_horizontal, (Calc_Lift_Coeff(a_alpha_rad)))
     a_lift_force_tailplane_vertical = Calc_Force_Lift(a_air_density, a_airspeed_true, c_area_tailplane_vertical, (Calc_Lift_Coeff(a_beta_rad)))
     
     a_accel_x = Calc_Force_Acc(a_lift_force_rudder, c_mass_aircraft) + Calc_Force_Acc(a_lift_force_tailplane_vertical, c_mass_aircraft)
-    
+    a_accel_y = Calc_Force_Acc(a_thrust_force, c_mass_aircraft)
     a_accel_z = Calc_Force_Acc(a_lift_force_wing, c_mass_aircraft) + Calc_Force_Acc(a_lift_force_elevator, c_mass_aircraft)
 
     a_angular_accel_x = Calc_Force_Angular_Acc('x', a_lift_force_tailplane_horizontal, c_position_tailplane_horizontal) + Calc_Force_Angular_Acc('x', a_lift_force_elevator, c_position_elevator)
