@@ -277,9 +277,16 @@ while True:
     # a_total_velocity = Calc_Velocity_Total_Magnitude(a_x_velocity, a_y_velocity, a_z_velocity)
     a_total_velocity = math.hypot(a_x_velocity, a_y_velocity, a_z_velocity)
 
-    a_angular_accel_x = Calc_Force_Angular_Acc('x', a_lift_force_tailplane_horizontal, c_position_tailplane_horizontal) + Calc_Force_Angular_Acc('x', a_lift_force_elevator, c_position_elevator)
-    a_angular_accel_y = Calc_Force_Angular_Acc('y', a_lift_force_aileron_left, c_position_aileron_left) + Calc_Force_Angular_Acc('y', a_lift_force_aileron_right, c_position_aileron_right)
-    a_angular_accel_z = Calc_Force_Angular_Acc('z', a_lift_force_tailplane_vertical, c_position_tailplane_vertical) + Calc_Force_Angular_Acc('x', a_lift_force_rudder, c_position_rudder)
+    a_angular_accel_x = \
+        Calc_Force_Angular_Acc('x', a_lift_force_tailplane_horizontal, c_position_tailplane_horizontal) + \
+        Calc_Force_Angular_Acc('x', a_lift_force_elevator, c_position_elevator) + \
+        Calc_Force_Angular_Acc('x', a_lift_force_wing, c_position_wing)
+    a_angular_accel_y = \
+        Calc_Force_Angular_Acc('y', a_lift_force_aileron_left, c_position_aileron_left) + \
+        Calc_Force_Angular_Acc('y', a_lift_force_aileron_right, c_position_aileron_right)
+    a_angular_accel_z = \
+        Calc_Force_Angular_Acc('z', a_lift_force_tailplane_vertical, c_position_tailplane_vertical) + \
+        Calc_Force_Angular_Acc('x', a_lift_force_rudder, c_position_rudder)
 
     a_angular_vel_x = a_angular_vel_x + Calc_Integral(a_angular_accel_x, dt)
     a_angular_vel_y = a_angular_vel_y + Calc_Integral(a_angular_accel_y, dt)
