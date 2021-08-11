@@ -26,6 +26,8 @@ a_x_velocity = 0
 a_y_velocity = 0
 a_z_velocity = 0
 
+a_total_velocity = 0
+
 a_angular_accel_x = 0
 a_angular_accel_y = 0
 a_angular_accel_z = 0
@@ -77,7 +79,7 @@ a_thrust_force = 0
 # Axes are defined as:
 # For aircraft:
 # X: left -ve, right +ve
-# Y: aft -ve, right +ve
+# Y: aft -ve, forward +ve
 # Z: down -ve, up +ve
 
 # For world:
@@ -148,6 +150,9 @@ def Calc_Velocity_World(axis, total_vel, angle_azimuthal, angle_polar):
         return (total_vel * math.cos(angle_azimuthal)) * math.sin(angle_polar)
     if axis == 'z':
         return (total_vel * math.cos(angle_polar)) * math.cos(angle_azimuthal)
+
+def Calc_Velocity_Total_Magnitude(vel_x, vel_y, vel_z):
+    return math.sqrt(math.sqrt((pow(vel_x, 2) + pow(vel_y, 2))) + pow(vel_z, 2))
 
 def Calc_Force_Angular_Acc(axis, force_magnitude, distance_from_pivot):
     if (axis == 'x'):
@@ -266,6 +271,8 @@ while True:
     a_y_velocity = a_y_velocity + Calc_Integral(a_accel_y, dt)
     a_z_velocity = a_z_velocity + Calc_Integral(a_accel_z, dt)
 
+    a_total_velocity = Calc_Velocity_Total_Magnitude(a_x_velocity, a_y_velocity, a_z_velocity)
+
     a_angular_accel_x = Calc_Force_Angular_Acc('x', a_lift_force_tailplane_horizontal, c_position_tailplane_horizontal) + Calc_Force_Angular_Acc('x', a_lift_force_elevator, c_position_elevator)
     a_angular_accel_y = Calc_Force_Angular_Acc('y', a_lift_force_aileron_left, c_position_aileron_left) + Calc_Force_Angular_Acc('y', a_lift_force_aileron_right, c_position_aileron_right)
     a_angular_accel_z = Calc_Force_Angular_Acc('z', a_lift_force_tailplane_vertical, c_position_tailplane_vertical) + Calc_Force_Angular_Acc('x', a_lift_force_rudder, c_position_rudder)
@@ -278,9 +285,9 @@ while True:
     a_angular_displacement_y = a_angular_displacement_y + Calc_Integral(a_angular_vel_y, dt)
     a_angular_displacement_z = a_angular_displacement_z + Calc_Integral(a_angular_vel_z, dt)
 
-    w_x_velocity = Calc_Velocity_World('x', a_radial_velocity, a_phi_rad, a_theta_rad)
-    w_y_velocity = Calc_Velocity_World('y', a_radial_velocity, a_phi_rad, a_theta_rad)
-    w_z_velocity = Calc_Velocity_World('z', a_radial_velocity, a_roll_rad, a_theta_rad)
+    w_x_velocity = Calc_Velocity_World('x', a_total_velocity, a_phi_rad, a_theta_rad)
+    w_y_velocity = Calc_Velocity_World('y', a_total_velocity, a_phi_rad, a_theta_rad)
+    w_z_velocity = Calc_Velocity_World('z', a_total_velocity, a_roll_rad, a_theta_rad)
 
     w_vec_velocity = [w_x_velocity, w_y_velocity, w_z_velocity]
 
