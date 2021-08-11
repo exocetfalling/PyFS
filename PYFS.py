@@ -266,9 +266,18 @@ while True:
     
     a_drag_force_wing = Calc_Force_Lift(a_air_density, a_airspeed_true, c_area_wing, (Calc_Drag_Coeff(a_alpha_rad + c_wing_incidence)))
 
-    a_accel_x = Calc_Force_Acc(a_lift_force_rudder, c_mass_aircraft) + Calc_Force_Acc(a_lift_force_tailplane_vertical, c_mass_aircraft) + Calc_Acc_Gravity('x', a_roll_rad, a_pitch_rad)
-    a_accel_y = Calc_Force_Acc(a_thrust_force, c_mass_aircraft) + Calc_Force_Acc(a_drag_force_wing, c_mass_aircraft) + Calc_Acc_Gravity('y', a_roll_rad, a_pitch_rad)
-    a_accel_z = Calc_Force_Acc(a_lift_force_wing, c_mass_aircraft) + Calc_Force_Acc(a_lift_force_elevator, c_mass_aircraft) + Calc_Acc_Gravity('z', a_roll_rad, a_pitch_rad)
+    a_accel_x = \
+        Calc_Force_Acc(a_lift_force_rudder, c_mass_aircraft) + \
+        Calc_Force_Acc(a_lift_force_tailplane_vertical, c_mass_aircraft) + \
+        Calc_Acc_Gravity('x', a_roll_rad, a_pitch_rad)
+    a_accel_y = \
+        Calc_Force_Acc(a_thrust_force, c_mass_aircraft) + \
+        Calc_Force_Acc(a_drag_force_wing, c_mass_aircraft) + \
+        Calc_Acc_Gravity('y', a_roll_rad, a_pitch_rad)
+    a_accel_z = \
+        Calc_Force_Acc(a_lift_force_wing, c_mass_aircraft) + \
+        Calc_Force_Acc(a_lift_force_elevator, c_mass_aircraft) + \
+        Calc_Acc_Gravity('z', a_roll_rad, a_pitch_rad)
 
     a_x_velocity = a_x_velocity + Calc_Integral(a_accel_x, dt)
     a_y_velocity = a_y_velocity + Calc_Integral(a_accel_y, dt)
