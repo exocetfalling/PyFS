@@ -246,6 +246,7 @@ while True:
         '\nX Vel: ' + str(a_x_velocity) + \
         '\nY Vel: ' + str(a_y_velocity) + \
         '\nZ Vel: ' + str(a_z_velocity) + \
+        '\nTotal: ' + str(a_total_velocity) + \
         '\nTHETA: ' + str(a_theta_deg) + \
         '\nPHI: ' + str(a_phi_deg) + \
         '\nPITCH: ' + str(Convert_Angle_Rad_To_Deg(a_pitch_rad)) + \
@@ -273,7 +274,8 @@ while True:
     a_y_velocity = a_y_velocity + Calc_Integral(a_accel_y, dt)
     a_z_velocity = a_z_velocity + Calc_Integral(a_accel_z, dt)
 
-    a_total_velocity = Calc_Velocity_Total_Magnitude(a_x_velocity, a_y_velocity, a_z_velocity)
+    # a_total_velocity = Calc_Velocity_Total_Magnitude(a_x_velocity, a_y_velocity, a_z_velocity)
+    a_total_velocity = math.sqrt((math.pow(a_x_velocity, 2) + math.pow(a_z_velocity, 2)))
 
     a_angular_accel_x = Calc_Force_Angular_Acc('x', a_lift_force_tailplane_horizontal, c_position_tailplane_horizontal) + Calc_Force_Angular_Acc('x', a_lift_force_elevator, c_position_elevator)
     a_angular_accel_y = Calc_Force_Angular_Acc('y', a_lift_force_aileron_left, c_position_aileron_left) + Calc_Force_Angular_Acc('y', a_lift_force_aileron_right, c_position_aileron_right)
@@ -287,8 +289,8 @@ while True:
     a_angular_displacement_y = a_angular_displacement_y + Calc_Integral(a_angular_vel_y, dt)
     a_angular_displacement_z = a_angular_displacement_z + Calc_Integral(a_angular_vel_z, dt)
 
-    a_alpha_rad = math.asin(a_y_velocity / a_total_velocity)
-    a_beta_rad = math.asin(a_x_velocity / a_total_velocity)
+    # a_alpha_rad = math.asin(a_y_velocity / a_total_velocity)
+    # a_beta_rad = math.asin(a_x_velocity / a_total_velocity)
 
     w_x_velocity = Calc_Velocity_World('x', a_total_velocity, a_phi_rad, a_theta_rad)
     w_y_velocity = Calc_Velocity_World('y', a_total_velocity, a_phi_rad, a_theta_rad)
