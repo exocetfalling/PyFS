@@ -23,10 +23,10 @@ a_accel_y = 0
 a_accel_z = 0
 
 a_x_velocity = 0
-a_y_velocity = 0
+a_y_velocity = 50
 a_z_velocity = 0
 
-a_total_velocity = 0
+a_total_velocity = 50
 
 a_angular_accel_x = 0
 a_angular_accel_y = 0
@@ -149,7 +149,7 @@ def Calc_Velocity_World(axis, total_vel, angle_azimuthal, angle_polar):
     if axis == 'y':
         return (total_vel * math.cos(angle_azimuthal)) * math.sin(angle_polar)
     if axis == 'z':
-        return (total_vel * math.cos(angle_polar)) * math.cos(angle_azimuthal)
+        return (total_vel * math.cos(angle_azimuthal))
 
 def Calc_Velocity_Total_Magnitude(vel_x, vel_y, vel_z):
     return math.sqrt(math.sqrt((pow(vel_x, 2) + pow(vel_y, 2))) + pow(vel_z, 2))
@@ -243,11 +243,13 @@ while True:
 
     dt = clock.tick(FPS) / 1000
     debug_text = \
-        '\nX Pos: ' + str(w_x_pos) + \
-        '\nY Pos: ' + str(w_y_pos) + \
-        '\nZ Pos: ' + str(w_z_pos) + \
+        '\nX Vel: ' + str(a_x_velocity) + \
+        '\nY Vel: ' + str(a_y_velocity) + \
+        '\nZ Vel: ' + str(a_z_velocity) + \
         '\nTHETA: ' + str(a_theta_deg) + \
-        '\nPHI: ' + str(a_phi_deg)
+        '\nPHI: ' + str(a_phi_deg) + \
+        '\nPITCH: ' + str(Convert_Angle_Rad_To_Deg(a_pitch_rad)) + \
+        '\nALPHA: ' + str(Convert_Angle_Rad_To_Deg(a_alpha_rad))
     a_phi_deg = (a_phi_deg + 360) % 360
     a_theta_deg = (a_theta_deg + 360) % 360
 
@@ -284,6 +286,9 @@ while True:
     a_angular_displacement_x = a_angular_displacement_x + Calc_Integral(a_angular_vel_x, dt)
     a_angular_displacement_y = a_angular_displacement_y + Calc_Integral(a_angular_vel_y, dt)
     a_angular_displacement_z = a_angular_displacement_z + Calc_Integral(a_angular_vel_z, dt)
+
+    a_alpha_rad = math.asin(a_y_velocity / a_total_velocity)
+    a_beta_rad = math.asin(a_x_velocity / a_total_velocity)
 
     w_x_velocity = Calc_Velocity_World('x', a_total_velocity, a_phi_rad, a_theta_rad)
     w_y_velocity = Calc_Velocity_World('y', a_total_velocity, a_phi_rad, a_theta_rad)
