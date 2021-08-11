@@ -262,6 +262,10 @@ while True:
     a_accel_y = Calc_Force_Acc(a_thrust_force, c_mass_aircraft) + Calc_Force_Acc(a_drag_force_wing, c_mass_aircraft) + Calc_Acc_Gravity('y', a_roll_rad, a_pitch_rad)
     a_accel_z = Calc_Force_Acc(a_lift_force_wing, c_mass_aircraft) + Calc_Force_Acc(a_lift_force_elevator, c_mass_aircraft) + Calc_Acc_Gravity('z', a_roll_rad, a_pitch_rad)
 
+    a_x_velocity = a_x_velocity + Calc_Integral(a_accel_x, dt)
+    a_y_velocity = a_y_velocity + Calc_Integral(a_accel_y, dt)
+    a_z_velocity = a_z_velocity + Calc_Integral(a_accel_z, dt)
+
     a_angular_accel_x = Calc_Force_Angular_Acc('x', a_lift_force_tailplane_horizontal, c_position_tailplane_horizontal) + Calc_Force_Angular_Acc('x', a_lift_force_elevator, c_position_elevator)
     a_angular_accel_y = Calc_Force_Angular_Acc('y', a_lift_force_aileron_left, c_position_aileron_left) + Calc_Force_Angular_Acc('y', a_lift_force_aileron_right, c_position_aileron_right)
     a_angular_accel_z = Calc_Force_Angular_Acc('z', a_lift_force_tailplane_vertical, c_position_tailplane_vertical) + Calc_Force_Angular_Acc('x', a_lift_force_rudder, c_position_rudder)
