@@ -14,8 +14,8 @@ import pygame.freetype  # Import the freetype module.
 
 a_theta_deg = 0
 a_theta_rad = 0
-a_phi_deg = 0
-a_phi_rad = 0
+a_phi_deg = 90
+a_phi_rad = math.pi/2
 a_radial_velocity = 50
 
 a_accel_x = 0
@@ -257,7 +257,7 @@ while True:
     a_phi_rad = Convert_Angle_Deg_To_Rad(a_phi_deg)
     a_theta_rad = Convert_Angle_Deg_To_Rad(a_theta_deg)
 
-    a_pitch_rad = ((a_pitch_rad + (2 * math.pi)) % (2 * math.pi)) - (math.pi)
+    a_pitch_rad = ((a_angular_displacement_x + (2 * math.pi)) % (2 * math.pi)) - (math.pi)
     a_roll_rad = ((a_roll_rad + (2 * math.pi)) % (2 * math.pi)) - (math.pi)
 
     a_lift_force_wing = Calc_Force_Lift(a_air_density, a_airspeed_true, c_area_wing, (Calc_Lift_Coeff(a_alpha_rad + c_wing_incidence)))
