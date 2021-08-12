@@ -180,7 +180,7 @@ def Calc_Lift_Coeff(angle_alpha_rad):
     y1 = 0
     x2 = -math.pi/12
     y2 = -1.5
-    x3 = -math.pi/12
+    x3 = math.pi/12
     y3 = 1.5
     x4 = math.pi
     y4 = 0
@@ -189,11 +189,14 @@ def Calc_Lift_Coeff(angle_alpha_rad):
     if ((angle_alpha_rad > (-math.pi)) and (angle_alpha_rad <= (-math.pi/12))):
         return (a * (angle_alpha_rad - x1) + y1)
     
-    if ((angle_alpha_rad > (-math.pi/12)) and (angle_alpha_rad <= (math.pi/12))):
+    elif ((angle_alpha_rad > (-math.pi/12)) and (angle_alpha_rad <= (math.pi/12))):
         return (b * (angle_alpha_rad - x2) + y2)
 
-    if ((angle_alpha_rad > (math.pi/12)) and (angle_alpha_rad <= (math.pi))):
+    elif ((angle_alpha_rad > (math.pi/12)) and (angle_alpha_rad <= (math.pi))):
         return (c * (angle_alpha_rad - x3) + y3)
+
+    else:
+        raise NameError('CalcCLErr')
 
 def Calc_Drag_Coeff(angle_rad):
     return math.sin(angle_rad)
@@ -257,8 +260,12 @@ while True:
     a_phi_rad = Convert_Angle_Deg_To_Rad(a_phi_deg)
     a_theta_rad = Convert_Angle_Deg_To_Rad(a_theta_deg)
 
-    a_pitch_rad = ((a_angular_displacement_x + (2 * math.pi)) % (2 * math.pi)) - (math.pi)
+    a_pitch_rad = a_angular_displacement_x
     a_roll_rad = ((a_roll_rad + (2 * math.pi)) % (2 * math.pi)) - (math.pi)
+
+    
+    a_alpha_rad = a_pitch_rad - math.asin(a_z_velocity / a_total_velocity)
+    # a_beta_rad = math.asin(a_x_velocity / a_total_velocity)
 
     a_lift_force_wing = Calc_Force_Lift(a_air_density, a_airspeed_true, c_area_wing, (Calc_Lift_Coeff(a_alpha_rad + c_wing_incidence)))
     a_lift_force_tailplane_horizontal = Calc_Force_Lift(a_air_density, a_airspeed_true, c_area_tailplane_horizontal, (Calc_Lift_Coeff(a_alpha_rad)))
@@ -306,9 +313,6 @@ while True:
     a_angular_displacement_x = a_angular_displacement_x + Calc_Integral(a_angular_vel_x, dt)
     a_angular_displacement_y = a_angular_displacement_y + Calc_Integral(a_angular_vel_y, dt)
     a_angular_displacement_z = a_angular_displacement_z + Calc_Integral(a_angular_vel_z, dt)
-
-    a_alpha_rad = a_pitch_rad - math.asin(a_z_velocity / a_total_velocity)
-    # a_beta_rad = math.asin(a_x_velocity / a_total_velocity)
 
     w_x_velocity = Calc_Velocity_World('x', a_total_velocity, a_phi_rad, a_theta_rad)
     w_y_velocity = Calc_Velocity_World('y', a_total_velocity, a_phi_rad, a_theta_rad)
