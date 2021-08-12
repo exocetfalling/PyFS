@@ -304,7 +304,7 @@ while True:
         Calc_Force_Angular_Acc('y', a_lift_force_aileron_right, c_position_aileron_right)
     a_angular_accel_z = \
         Calc_Force_Angular_Acc('z', a_lift_force_tailplane_vertical, c_position_tailplane_vertical) + \
-        Calc_Force_Angular_Acc('x', a_lift_force_rudder, c_position_rudder)
+        Calc_Force_Angular_Acc('z', a_lift_force_rudder, c_position_rudder)
 
     a_angular_vel_x = a_angular_vel_x + Calc_Integral(a_angular_accel_x, dt)
     a_angular_vel_y = a_angular_vel_y + Calc_Integral(a_angular_accel_y, dt)
