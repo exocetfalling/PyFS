@@ -112,7 +112,7 @@ c_wing_incidence = math.pi/60
 
 c_position_tailplane_horizontal = -9
 c_position_tailplane_vertical = -9
-c_position_wing = 0
+c_position_wing = -0.3
 c_position_elevator = -10
 c_position_aileron_left = -18
 c_position_aileron_right = 18
@@ -199,7 +199,7 @@ def Calc_Lift_Coeff(angle_alpha_rad):
         raise NameError('CalcCLErr')
 
 def Calc_Drag_Coeff(angle_rad):
-    return math.sin(angle_rad)
+    return 0.05 * math.sin(angle_rad)
 
 def Calc_Force_Lift(air_density, airspeed_true, surface_area, lift_coeff):
     return 0.5 * air_density * math.pow(airspeed_true, 2) * surface_area * lift_coeff
@@ -314,6 +314,8 @@ while True:
     a_angular_displacement_y = a_angular_displacement_y + Calc_Integral(a_angular_vel_y, dt)
     a_angular_displacement_z = a_angular_displacement_z + Calc_Integral(a_angular_vel_z, dt)
 
+    # a_angular_displacement_x = ((a_angular_displacement_x + (2 * math.pi)) % (2 * math.pi)) - (math.pi)
+
     w_x_velocity = Calc_Velocity_World('x', a_total_velocity, a_phi_rad, a_theta_rad)
     w_y_velocity = Calc_Velocity_World('y', a_total_velocity, a_phi_rad, a_theta_rad)
     w_z_velocity = Calc_Velocity_World('z', a_total_velocity, a_roll_rad, a_theta_rad)
@@ -327,10 +329,10 @@ while True:
     keys=pygame.key.get_pressed()
 
     if keys[pygame.K_w]:
-        a_theta_deg = a_theta_deg + 10 * dt
+        a_angular_vel_x = -math.pi/30
 
     if keys[pygame.K_s]:
-        a_theta_deg = a_theta_deg - 10 * dt
+        a_angular_vel_x =  math.pi/30
 
     if keys[pygame.K_a]:
         a_phi_deg = a_phi_deg - 10 * dt
