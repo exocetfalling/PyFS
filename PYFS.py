@@ -196,13 +196,13 @@ def Calc_Lift_Coeff(angle_alpha_rad):
         return (c * (angle_alpha_rad - x3) + y3)
 
 def Calc_Drag_Coeff(angle_rad):
-    return 0.2 * math.sin(angle_rad)
+    return math.sin(angle_rad)
 
 def Calc_Force_Lift(air_density, airspeed_true, surface_area, lift_coeff):
     return 0.5 * air_density * math.pow(airspeed_true, 2) * surface_area * lift_coeff
 
 def Calc_Force_Drag(air_density, airspeed_true, surface_area, drag_coeff):
-    return 0.5 * air_density * math.pow(airspeed_true, 2) * surface_area * drag_coeff
+    return -0.5 * air_density * airspeed_true * airspeed_true * surface_area * drag_coeff
 
 def Calc_Acc_Gravity(axis, angle_roll, angle_pitch):
     if (axis == 'x'):
@@ -218,7 +218,7 @@ def Convert_Angle_Rad_To_Deg(angle_rad):
 def Convert_Angle_Deg_To_Rad(angle_deg):
     return angle_deg / 57.2958
 
-def blit_text(surface, text, pos, font, color=pygame.Color('black')):
+def blit_text(surface, text, pos, font, color=pygame.Color('green')):
     words = [word.split(' ') for word in text.splitlines()]  # 2D array where each row is a list of words.
     space = font.size(' ')[0]  # The width of a space.
     max_width, max_height = surface.get_size()
@@ -243,14 +243,14 @@ while True:
 
     dt = clock.tick(FPS) / 1000
     debug_text = \
-        '\nX Vel: ' + str(a_x_velocity) + \
-        '\nY Vel: ' + str(a_y_velocity) + \
-        '\nZ Vel: ' + str(a_z_velocity) + \
-        '\nTotal: ' + str(a_total_velocity) + \
-        '\nTHETA: ' + str(a_theta_deg) + \
-        '\nPHI: ' + str(a_phi_deg) + \
-        '\nPITCH: ' + str(Convert_Angle_Rad_To_Deg(a_pitch_rad)) + \
-        '\nALPHA: ' + str(Convert_Angle_Rad_To_Deg(a_alpha_rad))
+        '\nX Vel: ' + str(round(a_x_velocity, 2)) + \
+        '\nY Vel: ' + str(round(a_y_velocity, 2)) + \
+        '\nZ Vel: ' + str(round(a_z_velocity, 2)) + \
+        '\nTotal: ' + str(round(a_total_velocity, 2)) + \
+        '\nTHETA: ' + str(round(a_theta_deg, 2)) + \
+        '\nPHI: ' + str(round(a_phi_deg, 2)) + \
+        '\nPITCH: ' + str(round(Convert_Angle_Rad_To_Deg(a_pitch_rad), 2)) + \
+        '\nALPHA: ' + str(round(Convert_Angle_Rad_To_Deg(a_alpha_rad), 2))
     a_phi_deg = (a_phi_deg + 360) % 360
     a_theta_deg = (a_theta_deg + 360) % 360
 
@@ -264,7 +264,9 @@ while True:
     a_lift_force_tailplane_horizontal = Calc_Force_Lift(a_air_density, a_airspeed_true, c_area_tailplane_horizontal, (Calc_Lift_Coeff(a_alpha_rad)))
     a_lift_force_tailplane_vertical = Calc_Force_Lift(a_air_density, a_airspeed_true, c_area_tailplane_vertical, (Calc_Lift_Coeff(a_beta_rad)))
     
-    a_drag_force_wing = Calc_Force_Lift(a_air_density, a_airspeed_true, c_area_wing, (Calc_Drag_Coeff(a_alpha_rad + c_wing_incidence)))
+    a_drag_force_wing = Calc_Force_Drag(a_air_density, a_airspeed_true, c_area_wing, (Calc_Drag_Coeff(a_alpha_rad + c_wing_incidence)))
+
+    a_airspeed_true = a_total_velocity
 
     a_accel_x = \
         Calc_Force_Acc(a_lift_force_rudder, c_mass_aircraft) + \
@@ -305,8 +307,8 @@ while True:
     a_angular_displacement_y = a_angular_displacement_y + Calc_Integral(a_angular_vel_y, dt)
     a_angular_displacement_z = a_angular_displacement_z + Calc_Integral(a_angular_vel_z, dt)
 
-    a_alpha_rad = math.asin(a_y_velocity / a_total_velocity)
-    a_beta_rad = math.asin(a_x_velocity / a_total_velocity)
+    a_alpha_rad = a_pitch_rad - math.asin(a_z_velocity / a_total_velocity)
+    # a_beta_rad = math.asin(a_x_velocity / a_total_velocity)
 
     w_x_velocity = Calc_Velocity_World('x', a_total_velocity, a_phi_rad, a_theta_rad)
     w_y_velocity = Calc_Velocity_World('y', a_total_velocity, a_phi_rad, a_theta_rad)
@@ -336,6 +338,6 @@ while True:
         if event.type == pygame.QUIT:
             quit()
 
-    screen.fill(pygame.Color('white'))
+    screen.fill(pygame.Color('black'))
     blit_text(screen, debug_text, (20, 20), font)
     pygame.display.update()
