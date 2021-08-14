@@ -264,7 +264,7 @@ while True:
     a_roll_rad = ((a_roll_rad + (2 * math.pi)) % (2 * math.pi)) - (math.pi)
 
     
-    a_alpha_rad = a_pitch_rad - math.asin(a_z_velocity / a_total_velocity)
+    a_alpha_rad = math.asin(a_z_velocity / a_total_velocity)
     # a_beta_rad = math.asin(a_x_velocity / a_total_velocity)
 
     a_lift_force_wing = Calc_Force_Lift(a_air_density, a_airspeed_true, c_area_wing, (Calc_Lift_Coeff(a_alpha_rad + c_wing_incidence)))
