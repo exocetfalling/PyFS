@@ -112,14 +112,14 @@ c_wing_incidence = math.pi/60
 
 c_position_tailplane_horizontal = -9
 c_position_tailplane_vertical = -9
-c_position_wing = -0.3
+c_position_wing = 0
 c_position_elevator = -10
 c_position_aileron_left = -18
 c_position_aileron_right = 18
 c_position_rudder = -10
 
 # Areas in m^2
-c_area_wing = 50
+c_area_wing = 30
 c_area_tailplane_horizontal = 2
 c_area_tailplane_vertical = 2
 c_area_aileron = 0.5
@@ -172,10 +172,7 @@ def Calc_Integral(value, time_interval):
     return value * time_interval
 
 def Calc_Lift_Coeff(angle_alpha_rad):
-    a = -0.520870722846
-    b = 5.72957795131
-    c = -0.520870722846
-
+    
     x1 = -math.pi
     y1 = 0
     x2 = -math.pi/12
@@ -185,18 +182,22 @@ def Calc_Lift_Coeff(angle_alpha_rad):
     x4 = math.pi
     y4 = 0
 
+    a = (y2 - y1) / (x2 - x1)
+    b = (y3 - y2) / (x3 - x2)
+    c = (y4 - y3) / (x4 - x3)
 
-    if ((angle_alpha_rad > (-math.pi)) and (angle_alpha_rad <= (-math.pi/12))):
+    if ((angle_alpha_rad > x1) and (angle_alpha_rad <= x2)):
         return (a * (angle_alpha_rad - x1) + y1)
     
-    elif ((angle_alpha_rad > (-math.pi/12)) and (angle_alpha_rad <= (math.pi/12))):
+    elif ((angle_alpha_rad > x2) and (angle_alpha_rad <= x3)):
         return (b * (angle_alpha_rad - x2) + y2)
 
-    elif ((angle_alpha_rad > (math.pi/12)) and (angle_alpha_rad <= (math.pi))):
+    elif ((angle_alpha_rad > x3) and (angle_alpha_rad <= x4)):
         return (c * (angle_alpha_rad - x3) + y3)
 
     else:
         raise NameError('CalcCLErr')
+
 
 def Calc_Drag_Coeff(angle_rad):
     return 0.05 * math.sin(angle_rad)
@@ -261,10 +262,10 @@ while True:
     a_theta_rad = Convert_Angle_Deg_To_Rad(a_theta_deg)
 
     a_pitch_rad = a_angular_displacement_x
-    a_roll_rad = ((a_roll_rad + (2 * math.pi)) % (2 * math.pi)) - (math.pi)
+    a_roll_rad = a_angular_displacement_y
 
     
-    a_alpha_rad = a_pitch_rad - math.asin(a_z_velocity / a_total_velocity)
+    a_alpha_rad = math.asin(a_z_velocity / a_total_velocity)
     # a_beta_rad = math.asin(a_x_velocity / a_total_velocity)
 
     a_lift_force_wing = Calc_Force_Lift(a_air_density, a_airspeed_true, c_area_wing, (Calc_Lift_Coeff(a_alpha_rad + c_wing_incidence)))
@@ -335,10 +336,10 @@ while True:
         a_angular_vel_x =  math.pi/30
 
     if keys[pygame.K_a]:
-        a_phi_deg = a_phi_deg - 10 * dt
+        a_angular_vel_y = -math.pi/30
 
     if keys[pygame.K_d]:
-        a_phi_deg = a_phi_deg + 10 * dt
+        a_angular_vel_y =  math.pi/30
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
