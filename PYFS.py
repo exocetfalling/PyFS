@@ -158,13 +158,8 @@ def Calc_Velocity_World(axis, total_vel, angle_azimuthal, angle_polar):
 def Calc_Velocity_Total_Magnitude(vel_x, vel_y, vel_z):
     return math.sqrt(math.sqrt((pow(vel_x, 2) + pow(vel_y, 2))) + pow(vel_z, 2))
 
-def Calc_Force_Angular_Acc(axis, force_magnitude, distance_from_pivot):
-    if (axis == 'x'):
-        return force_magnitude * distance_from_pivot / c_moi_pitch
-    if (axis == 'y'):
-        return force_magnitude * distance_from_pivot / c_moi_roll
-    if (axis == 'z'):
-        return force_magnitude * distance_from_pivot / c_moi_yaw
+def Calc_Force_Angular_Acc(axis_moi, force_magnitude, distance_from_pivot):
+    return force_magnitude * distance_from_pivot / axis_moi
 
 def Calc_Angular_Vel():
     pass
@@ -305,15 +300,15 @@ while True:
     a_total_velocity = math.hypot(a_x_velocity, a_y_velocity, a_z_velocity)
 
     a_angular_accel_x = \
-        Calc_Force_Angular_Acc('x', a_lift_force_tailplane_horizontal, c_position_tailplane_horizontal) + \
-        Calc_Force_Angular_Acc('x', a_lift_force_elevator, c_position_elevator) + \
-        Calc_Force_Angular_Acc('x', a_lift_force_wing, c_position_wing)
+        Calc_Force_Angular_Acc(c_moi_pitch, a_lift_force_tailplane_horizontal, c_position_tailplane_horizontal) + \
+        Calc_Force_Angular_Acc(c_moi_pitch, a_lift_force_elevator, c_position_elevator) + \
+        Calc_Force_Angular_Acc(c_moi_pitch, a_lift_force_wing, c_position_wing)
     a_angular_accel_y = \
-        Calc_Force_Angular_Acc('y', a_lift_force_aileron_left, c_position_aileron_left) + \
-        Calc_Force_Angular_Acc('y', a_lift_force_aileron_right, c_position_aileron_right)
+        Calc_Force_Angular_Acc(c_moi_roll, a_lift_force_aileron_left, c_position_aileron_left) + \
+        Calc_Force_Angular_Acc(c_moi_roll, a_lift_force_aileron_right, c_position_aileron_right)
     a_angular_accel_z = \
-        Calc_Force_Angular_Acc('z', a_lift_force_tailplane_vertical, c_position_tailplane_vertical) + \
-        Calc_Force_Angular_Acc('z', a_lift_force_rudder, c_position_rudder)
+        Calc_Force_Angular_Acc(c_moi_yaw, a_lift_force_tailplane_vertical, c_position_tailplane_vertical) + \
+        Calc_Force_Angular_Acc(c_moi_yaw, a_lift_force_rudder, c_position_rudder)
 
     a_angular_vel_x = a_angular_vel_x + Calc_Integral(a_angular_accel_x, dt)
     a_angular_vel_y = a_angular_vel_y + Calc_Integral(a_angular_accel_y, dt)
