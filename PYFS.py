@@ -259,6 +259,7 @@ while True:
         '\nPITCH ACCEL: ' + str(round(a_angular_accel_x, 2)) + \
         '\nPITCH VEL: ' + str(round(a_angular_vel_x, 2)) + \
         '\nPITCH: ' + str(round(Convert_Angle_Rad_To_Deg(a_pitch_rad), 2)) + \
+        '\nROLL: ' + str(round(Convert_Angle_Rad_To_Deg(a_roll_rad), 2)) + \
         '\nALPHA: ' + str(round(Convert_Angle_Rad_To_Deg(a_alpha_rad), 2))
     a_phi_deg = (a_phi_deg + 360) % 360
     a_theta_deg = (a_theta_deg + 360) % 360
@@ -271,7 +272,7 @@ while True:
 
     
     a_alpha_rad = -math.asin(a_z_velocity / a_total_velocity)
-    # a_beta_rad = math.asin(a_x_velocity / a_total_velocity)
+    a_beta_rad = -math.asin(a_x_velocity / a_total_velocity)
 
     a_lift_force_wing = Calc_Force_Lift(a_air_density, a_airspeed_true, c_area_wing, (Calc_Lift_Coeff(a_alpha_rad + c_wing_incidence)))
     a_lift_force_tailplane_horizontal = Calc_Force_Lift(a_air_density, a_airspeed_true, c_area_tailplane_horizontal, (Calc_Lift_Coeff(a_alpha_rad)))
@@ -312,7 +313,8 @@ while True:
         -8 * a_angular_vel_x
     a_angular_accel_y = \
         Calc_Force_Angular_Acc(c_moi_roll, a_lift_force_aileron_left, c_position_aileron_left) + \
-        Calc_Force_Angular_Acc(c_moi_roll, a_lift_force_aileron_right, c_position_aileron_right)
+        Calc_Force_Angular_Acc(c_moi_roll, a_lift_force_aileron_right, c_position_aileron_right) + \
+        -8 * a_angular_vel_y
     a_angular_accel_z = \
         Calc_Force_Angular_Acc(c_moi_yaw, a_lift_force_tailplane_vertical, c_position_tailplane_vertical) + \
         Calc_Force_Angular_Acc(c_moi_yaw, a_lift_force_rudder, c_position_rudder)
