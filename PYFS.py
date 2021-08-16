@@ -201,7 +201,7 @@ def Calc_Lift_Coeff(angle_alpha_rad):
 
 
 def Calc_Drag_Coeff(angle_rad):
-    return 1.0 * math.sin(angle_rad)
+    return 0.05 * math.sin(angle_rad)
 
 def Calc_Force_Lift(air_density, airspeed_true, surface_area, lift_coeff):
     return 0.5 * air_density * math.pow(airspeed_true, 2) * surface_area * lift_coeff
