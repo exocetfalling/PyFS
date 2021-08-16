@@ -74,6 +74,8 @@ a_lift_force_tailplane_vertical = 0
 
 a_drag_force_wing = 0
 
+a_angular_damping_x = 0
+
 a_thrust_force = 0
 
 # Axes are defined as:
@@ -207,6 +209,10 @@ def Calc_Force_Lift(air_density, airspeed_true, surface_area, lift_coeff):
 def Calc_Force_Drag(air_density, airspeed_true, surface_area, drag_coeff):
     return -0.5 * air_density * airspeed_true * airspeed_true * surface_area * drag_coeff
 
+def Calc_Force_Drag_Angular(air_density, velocity_rotational, surface_area, drag_coeff):
+    return -0.5 * air_density * pow(velocity_rotational, 2) * surface_area * drag_coeff
+
+
 def Calc_Acc_Gravity(axis, angle_roll, angle_pitch):
     if (axis == 'x'):
         return -9.8065 * math.sin(angle_roll)
@@ -250,8 +256,8 @@ while True:
         '\nY Vel: ' + str(round(a_y_velocity, 2)) + \
         '\nZ Vel: ' + str(round(a_z_velocity, 2)) + \
         '\nTotal: ' + str(round(a_total_velocity, 2)) + \
-        '\nTHETA: ' + str(round(a_theta_deg, 2)) + \
-        '\nPHI: ' + str(round(a_phi_deg, 2)) + \
+        '\nPITCH ACCEL: ' + str(round(a_angular_accel_x, 2)) + \
+        '\nPITCH VEL: ' + str(round(a_angular_vel_x, 2)) + \
         '\nPITCH: ' + str(round(Convert_Angle_Rad_To_Deg(a_pitch_rad), 2)) + \
         '\nALPHA: ' + str(round(Convert_Angle_Rad_To_Deg(a_alpha_rad), 2))
     a_phi_deg = (a_phi_deg + 360) % 360
@@ -302,7 +308,8 @@ while True:
     a_angular_accel_x = \
         Calc_Force_Angular_Acc(c_moi_pitch, a_lift_force_tailplane_horizontal, c_position_tailplane_horizontal) + \
         Calc_Force_Angular_Acc(c_moi_pitch, a_lift_force_elevator, c_position_elevator) + \
-        Calc_Force_Angular_Acc(c_moi_pitch, a_lift_force_wing, c_position_wing)
+        Calc_Force_Angular_Acc(c_moi_pitch, a_lift_force_wing, c_position_wing) + \
+        -8 * a_angular_vel_x
     a_angular_accel_y = \
         Calc_Force_Angular_Acc(c_moi_roll, a_lift_force_aileron_left, c_position_aileron_left) + \
         Calc_Force_Angular_Acc(c_moi_roll, a_lift_force_aileron_right, c_position_aileron_right)
