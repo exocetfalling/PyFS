@@ -136,9 +136,13 @@ c_moi_pitch = 8333
 c_moi_roll = 33333
 c_moi_yaw = 8333
 
+a_accel_x_grav = 0
+a_accel_y_grav = 0
+a_accel_z_grav = 0
+
 pygame.init()
 SIZE = WIDTH, HEIGHT = (1024, 720)
-FPS = 30
+FPS = 60
 screen = pygame.display.set_mode(SIZE, pygame.RESIZABLE)
 clock = pygame.time.Clock()
 
@@ -200,7 +204,7 @@ def Calc_Lift_Coeff(angle_alpha_rad):
 
 
 def Calc_Drag_Coeff(angle_rad):
-    return 0.05 * math.sin(angle_rad)
+    return 1.0 * math.sin(angle_rad)
 
 def Calc_Force_Lift(air_density, airspeed_true, surface_area, lift_coeff):
     return 0.5 * air_density * math.pow(airspeed_true, 2) * surface_area * lift_coeff
@@ -265,7 +269,7 @@ while True:
     a_roll_rad = a_angular_displacement_y
 
     
-    a_alpha_rad = math.asin(a_z_velocity / a_total_velocity)
+    a_alpha_rad = -math.asin(a_z_velocity / a_total_velocity)
     # a_beta_rad = math.asin(a_x_velocity / a_total_velocity)
 
     a_lift_force_wing = Calc_Force_Lift(a_air_density, a_airspeed_true, c_area_wing, (Calc_Lift_Coeff(a_alpha_rad + c_wing_incidence)))
@@ -275,6 +279,10 @@ while True:
     a_drag_force_wing = Calc_Force_Drag(a_air_density, a_airspeed_true, c_area_wing, (Calc_Drag_Coeff(a_alpha_rad + c_wing_incidence)))
 
     a_airspeed_true = a_total_velocity
+
+    a_accel_x_grav = Calc_Acc_Gravity('x', a_roll_rad, a_pitch_rad)
+    a_accel_y_grav = Calc_Acc_Gravity('y', a_roll_rad, a_pitch_rad)
+    a_accel_z_grav = Calc_Acc_Gravity('z', a_roll_rad, a_pitch_rad)
 
     a_accel_x = \
         Calc_Force_Acc(a_lift_force_rudder, c_mass_aircraft) + \
