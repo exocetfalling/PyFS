@@ -49,6 +49,10 @@ a_roll_rad = 0
 a_alpha_rad = 0
 a_beta_rad = 0
 
+a_fpa_rad = 0
+a_hdg_rad = 0
+a_trk_rad = 0
+
 a_cl_wing = 0
 a_cl_tailplane_horizontal = 0
 a_cl_tailplane_vertical = 0
@@ -267,12 +271,14 @@ while True:
     a_phi_rad = Convert_Angle_Deg_To_Rad(a_phi_deg)
     a_theta_rad = Convert_Angle_Deg_To_Rad(a_theta_deg)
 
-    a_pitch_rad = a_angular_displacement_x
+    a_pitch_rad = a_angular_displacement_x * math.cos(a_roll_rad)
     a_roll_rad = a_angular_displacement_y
-
     
     a_alpha_rad = -math.asin(a_z_velocity / a_total_velocity)
     a_beta_rad = -math.asin(a_x_velocity / a_total_velocity)
+
+    a_fpa_rad = a_pitch_rad - a_alpha_rad
+    a_trk_rad = a_hdg_rad - a_beta_rad
 
     a_lift_force_wing = Calc_Force_Lift(a_air_density, a_airspeed_true, c_area_wing, (Calc_Lift_Coeff(a_alpha_rad + c_wing_incidence)))
     a_lift_force_tailplane_horizontal = Calc_Force_Lift(a_air_density, a_airspeed_true, c_area_tailplane_horizontal, (Calc_Lift_Coeff(a_alpha_rad)))
