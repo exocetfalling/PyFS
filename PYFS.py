@@ -18,27 +18,16 @@ a_phi_deg = 90
 a_phi_rad = math.pi/2
 a_radial_velocity = 50
 
-a_accel_x = 0
-a_accel_y = 0
-a_accel_z = 0
+a_accel_linear = [0, 0, 0]
 
-a_x_velocity = 0
-a_y_velocity = 50
-a_z_velocity = 0
-
+a_velocity_linear = [0, 50, 0]
 a_total_velocity = 50
 
-a_angular_accel_x = 0
-a_angular_accel_y = 0
-a_angular_accel_z = 0
+a_accel_angular = [0, 0, 0]
 
-a_angular_vel_x = 0
-a_angular_vel_y = 0
-a_angular_vel_z = 0
+a_velocity_angular = [0, 0, 0]
 
-a_angular_displacement_x = 0
-a_angular_displacement_y = 0
-a_angular_displacement_z = 0
+a_displacement_angular = [0, 0, 0]
 
 a_airspeed_indicated = 0
 a_alt = 0
@@ -256,12 +245,12 @@ while True:
 
     dt = clock.tick(FPS) / 1000
     debug_text = \
-        '\nX Vel: ' + str(round(a_x_velocity, 2)) + \
-        '\nY Vel: ' + str(round(a_y_velocity, 2)) + \
-        '\nZ Vel: ' + str(round(a_z_velocity, 2)) + \
+        '\nX Vel: ' + str(round(a_velocity_linear[0], 2)) + \
+        '\nY Vel: ' + str(round(a_velocity_linear[1], 2)) + \
+        '\nZ Vel: ' + str(round(a_velocity_linear[2], 2)) + \
         '\nTotal: ' + str(round(a_total_velocity, 2)) + \
-        '\nPITCH ACCEL: ' + str(round(a_angular_accel_x, 2)) + \
-        '\nPITCH VEL: ' + str(round(a_angular_vel_x, 2)) + \
+        '\nPITCH ACCEL: ' + str(round(a_accel_angular[0], 2)) + \
+        '\nPITCH VEL: ' + str(round(a_velocity_angular[0], 2)) + \
         '\nPITCH: ' + str(round(Convert_Angle_Rad_To_Deg(a_pitch_rad), 2)) + \
         '\nROLL: ' + str(round(Convert_Angle_Rad_To_Deg(a_roll_rad), 2)) + \
         '\nALPHA: ' + str(round(Convert_Angle_Rad_To_Deg(a_alpha_rad), 2))
@@ -271,11 +260,11 @@ while True:
     a_phi_rad = Convert_Angle_Deg_To_Rad(a_phi_deg)
     a_theta_rad = Convert_Angle_Deg_To_Rad(a_theta_deg)
 
-    a_pitch_rad = a_angular_displacement_x * math.cos(a_roll_rad)
-    a_roll_rad = a_angular_displacement_y
+    a_pitch_rad = a_displacement_angular[0] * math.cos(a_roll_rad)
+    a_roll_rad = a_displacement_angular[1]
     
-    a_alpha_rad = -math.asin(a_z_velocity / a_total_velocity)
-    a_beta_rad = -math.asin(a_x_velocity / a_total_velocity)
+    a_alpha_rad = -math.asin(a_velocity_linear[2] / a_total_velocity)
+    a_beta_rad = -math.asin(a_velocity_linear[0] / a_total_velocity)
 
     a_fpa_rad = a_pitch_rad - a_alpha_rad
     a_trk_rad = a_hdg_rad - a_beta_rad
@@ -292,47 +281,46 @@ while True:
     a_accel_y_grav = Calc_Acc_Gravity('y', a_roll_rad, a_pitch_rad)
     a_accel_z_grav = Calc_Acc_Gravity('z', a_roll_rad, a_pitch_rad)
 
-    a_accel_x = \
+    a_accel_linear[0] = \
         Calc_Force_Acc(a_lift_force_rudder, c_mass_aircraft) + \
         Calc_Force_Acc(a_lift_force_tailplane_vertical, c_mass_aircraft) + \
         Calc_Acc_Gravity('x', a_roll_rad, a_pitch_rad)
-    a_accel_y = \
+    a_accel_linear[1] = \
         Calc_Force_Acc(a_thrust_force, c_mass_aircraft) + \
         Calc_Force_Acc(a_drag_force_wing, c_mass_aircraft) + \
         Calc_Acc_Gravity('y', a_roll_rad, a_pitch_rad)
-    a_accel_z = \
+    a_accel_linear[2] = \
         Calc_Force_Acc(a_lift_force_wing, c_mass_aircraft) + \
         Calc_Force_Acc(a_lift_force_elevator, c_mass_aircraft) + \
         Calc_Acc_Gravity('z', a_roll_rad, a_pitch_rad)
 
-    a_x_velocity = a_x_velocity + Calc_Integral(a_accel_x, dt)
-    a_y_velocity = a_y_velocity + Calc_Integral(a_accel_y, dt)
-    a_z_velocity = a_z_velocity + Calc_Integral(a_accel_z, dt)
-
+    a_velocity_linear[0] = a_velocity_linear[0] + Calc_Integral(a_accel_angular[0], dt)
+    a_velocity_linear[1] = a_velocity_linear[1] + Calc_Integral(a_accel_angular[1], dt)
+    a_velocity_linear[2] = a_velocity_linear[2] + Calc_Integral(a_accel_angular[2], dt)
     # a_total_velocity = Calc_Velocity_Total_Magnitude(a_x_velocity, a_y_velocity, a_z_velocity)
-    a_total_velocity = math.hypot(a_x_velocity, a_y_velocity, a_z_velocity)
+    a_total_velocity = math.hypot(a_velocity_linear[0], a_velocity_linear[1], a_velocity_linear[2])
     
 
-    a_angular_accel_x = \
+    a_accel_angular[0] = \
         Calc_Force_Angular_Acc(c_moi_pitch, a_lift_force_tailplane_horizontal, c_position_tailplane_horizontal) + \
         Calc_Force_Angular_Acc(c_moi_pitch, a_lift_force_elevator, c_position_elevator) + \
         Calc_Force_Angular_Acc(c_moi_pitch, a_lift_force_wing, c_position_wing) + \
-        -16 * a_angular_vel_x
-    a_angular_accel_y = \
+        -16 * a_accel_angular[0]
+    a_accel_angular[1] = \
         Calc_Force_Angular_Acc(c_moi_roll, a_lift_force_aileron_left, c_position_aileron_left) + \
         Calc_Force_Angular_Acc(c_moi_roll, a_lift_force_aileron_right, c_position_aileron_right) + \
-        -8 * a_angular_vel_y
-    a_angular_accel_z = \
+        -8 * a_accel_angular[1]
+    a_accel_angular[2] = \
         Calc_Force_Angular_Acc(c_moi_yaw, a_lift_force_tailplane_vertical, c_position_tailplane_vertical) + \
         Calc_Force_Angular_Acc(c_moi_yaw, a_lift_force_rudder, c_position_rudder)
 
-    a_angular_vel_x = a_angular_vel_x + Calc_Integral(a_angular_accel_x, dt)
-    a_angular_vel_y = a_angular_vel_y + Calc_Integral(a_angular_accel_y, dt)
-    a_angular_vel_z = a_angular_vel_z + Calc_Integral(a_angular_accel_z, dt)
+    a_velocity_angular[0] = a_velocity_angular[0] + Calc_Integral(a_accel_angular[0], dt)
+    a_velocity_angular[1] = a_velocity_angular[1] + Calc_Integral(a_accel_angular[1], dt)
+    a_velocity_angular[2] = a_velocity_angular[2] + Calc_Integral(a_accel_angular[2], dt)
 
-    a_angular_displacement_x = a_angular_displacement_x + Calc_Integral(a_angular_vel_x, dt)
-    a_angular_displacement_y = a_angular_displacement_y + Calc_Integral(a_angular_vel_y, dt)
-    a_angular_displacement_z = a_angular_displacement_z + Calc_Integral(a_angular_vel_z, dt)
+    a_displacement_angular[0] = a_displacement_angular[0] + Calc_Integral(a_velocity_angular[0], dt)
+    a_displacement_angular[1] = a_displacement_angular[1] + Calc_Integral(a_velocity_angular[1], dt)
+    a_displacement_angular[2] = a_displacement_angular[2] + Calc_Integral(a_velocity_angular[2], dt)
 
     # a_angular_displacement_x = ((a_angular_displacement_x + (2 * math.pi)) % (2 * math.pi)) - (math.pi)
 
