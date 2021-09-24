@@ -132,6 +132,10 @@ c_area_aileron = 0.5
 c_area_elevator = 0.5
 c_area_rudder = 0.5
 
+c_area_rot_drag_x = 30
+c_area_rot_drag_y = 20
+c_area_rot_drag_z = 20
+
 # Masses in kg
 c_mass_aircraft = 1000
 
