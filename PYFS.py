@@ -132,9 +132,9 @@ c_area_aileron = 0.5
 c_area_elevator = 0.5
 c_area_rudder = 0.5
 
-c_area_rot_drag_x = 30
-c_area_rot_drag_y = 20
-c_area_rot_drag_z = 20
+c_area_rot_drag_x = 40
+c_area_rot_drag_y = 40
+c_area_rot_drag_z = 30
 
 # Masses in kg
 c_mass_aircraft = 1000
@@ -217,8 +217,9 @@ def Calc_Force_Lift(air_density, airspeed_true, surface_area, lift_coeff):
 def Calc_Force_Drag(air_density, airspeed_true, surface_area, drag_coeff):
     return -0.5 * air_density * airspeed_true * airspeed_true * surface_area * drag_coeff
 
-def Calc_Drag_Angular(air_density, velocity_rotational, surface_area, drag_coeff):
-    return -0.5 * air_density * pow(velocity_rotational, 2) * surface_area * drag_coeff
+def Calc_Drag_Angular(air_density, velocity_rotational, surface_area):
+    return -air_density * velocity_rotational * surface_area
+    #return -0.5 * air_density * pow(velocity_rotational, 2) * surface_area
 
 
 def Calc_Acc_Gravity(axis, angle_roll, angle_pitch):
@@ -321,14 +322,15 @@ while True:
         Calc_Force_Angular_Acc(c_moi_pitch, a_lift_force_tailplane_horizontal, c_position_tailplane_horizontal) + \
         Calc_Force_Angular_Acc(c_moi_pitch, a_lift_force_elevator, c_position_elevator) + \
         Calc_Force_Angular_Acc(c_moi_pitch, a_lift_force_wing, c_position_wing) + \
-        -16 * a_angular_vel_x
+        Calc_Drag_Angular(a_air_density, a_angular_vel_x, c_area_rot_drag_x)
     a_angular_accel_y = \
         Calc_Force_Angular_Acc(c_moi_roll, a_lift_force_aileron_left, c_position_aileron_left) + \
         Calc_Force_Angular_Acc(c_moi_roll, a_lift_force_aileron_right, c_position_aileron_right) + \
-        -8 * a_angular_vel_y
+        Calc_Drag_Angular(a_air_density, a_angular_vel_y, c_area_rot_drag_y)
     a_angular_accel_z = \
         Calc_Force_Angular_Acc(c_moi_yaw, a_lift_force_tailplane_vertical, c_position_tailplane_vertical) + \
-        Calc_Force_Angular_Acc(c_moi_yaw, a_lift_force_rudder, c_position_rudder)
+        Calc_Force_Angular_Acc(c_moi_yaw, a_lift_force_rudder, c_position_rudder) + \
+        Calc_Drag_Angular(a_air_density, a_angular_vel_z, c_area_rot_drag_z)
 
     a_angular_vel_x = a_angular_vel_x + Calc_Integral(a_angular_accel_x, dt)
     a_angular_vel_y = a_angular_vel_y + Calc_Integral(a_angular_accel_y, dt)
