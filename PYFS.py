@@ -217,7 +217,7 @@ def Calc_Force_Lift(air_density, airspeed_true, surface_area, lift_coeff):
 def Calc_Force_Drag(air_density, airspeed_true, surface_area, drag_coeff):
     return -0.5 * air_density * airspeed_true * airspeed_true * surface_area * drag_coeff
 
-def Calc_Force_Drag_Angular(air_density, velocity_rotational, surface_area, drag_coeff):
+def Calc_Drag_Angular(air_density, velocity_rotational, surface_area, drag_coeff):
     return -0.5 * air_density * pow(velocity_rotational, 2) * surface_area * drag_coeff
 
 
