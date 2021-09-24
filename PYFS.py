@@ -305,7 +305,7 @@ while True:
         Calc_Force_Angular_Acc(c_moi_pitch, a_lift_force_tailplane_horizontal, c_position_tailplane_horizontal) + \
         Calc_Force_Angular_Acc(c_moi_pitch, a_lift_force_elevator, c_position_elevator) + \
         Calc_Force_Angular_Acc(c_moi_pitch, a_lift_force_wing, c_position_wing) + \
-        -16 * a_accel_angular[0]
+        -16 * a_velocity_angular[0]
     a_accel_angular[1] = \
         Calc_Force_Angular_Acc(c_moi_roll, a_lift_force_aileron_left, c_position_aileron_left) + \
         Calc_Force_Angular_Acc(c_moi_roll, a_lift_force_aileron_right, c_position_aileron_right) + \
