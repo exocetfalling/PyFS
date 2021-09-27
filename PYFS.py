@@ -342,6 +342,8 @@ while True:
 
     # a_angular_displacement_x = ((a_angular_displacement_x + (2 * math.pi)) % (2 * math.pi)) - (math.pi)
 
+    a_hdg_rad = a_hdg_rad + a_angular_accel_x * math.cos(a_roll_rad)
+
     w_x_velocity = Calc_Velocity_World('x', a_total_velocity, a_phi_rad, a_theta_rad)
     w_y_velocity = Calc_Velocity_World('y', a_total_velocity, a_phi_rad, a_theta_rad)
     w_z_velocity = Calc_Velocity_World('z', a_total_velocity, a_roll_rad, a_theta_rad)
