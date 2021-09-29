@@ -282,8 +282,8 @@ while True:
     a_phi_rad = Limit_Angle(a_phi_rad, 0, 2*math.pi)
     a_theta_rad = Limit_Angle(a_theta_rad, 0, 2*math.pi)
 
-    a_pitch_rad = a_angular_displacement_x * math.cos(a_roll_rad)
-    a_roll_rad = a_angular_displacement_y
+    a_pitch_rad = Limit_Angle((a_angular_displacement_x * math.cos(a_roll_rad)), -math.pi/2, math.pi/2)
+    a_roll_rad = Limit_Angle(a_angular_displacement_y, -math.pi, math.pi)
     
     a_alpha_rad = -math.asin(a_z_velocity / a_total_velocity)
     a_beta_rad = -math.asin(a_x_velocity / a_total_velocity)
