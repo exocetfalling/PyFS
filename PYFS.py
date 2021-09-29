@@ -240,7 +240,7 @@ def Limit_Angle(angle_rad, angle_min, angle_max):
     if (angle_rad < angle_min):
         return angle_max
     elif (angle_rad > angle_max):
-        return angle_max
+        return angle_min
     else:
         return angle_rad
 
