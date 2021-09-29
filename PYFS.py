@@ -277,6 +277,8 @@ while True:
         '\nPITCH VEL: ' + str(round(a_angular_vel_x, 2)) + \
         '\nPITCH: ' + str(round(Convert_Angle_Rad_To_Deg(a_pitch_rad), 2)) + \
         '\nROLL: ' + str(round(Convert_Angle_Rad_To_Deg(a_roll_rad), 2)) + \
+        '\nHDG: ' + str(round(Convert_Angle_Rad_To_Deg(a_hdg_rad), 2)) + \
+        '\nYAW VEL: ' + str(round(a_angular_vel_z, 2)) + \
         '\nALPHA: ' + str(round(Convert_Angle_Rad_To_Deg(a_alpha_rad), 2))
 
     a_phi_rad = Limit_Angle(a_phi_rad, 0, 2*math.pi)
@@ -287,6 +289,8 @@ while True:
     
     a_alpha_rad = -math.asin(a_z_velocity / a_total_velocity)
     a_beta_rad = -math.asin(a_x_velocity / a_total_velocity)
+
+    a_hdg_rad = Limit_Angle(a_hdg_rad, 0, 2*math.pi)
 
     a_fpa_rad = a_pitch_rad - a_alpha_rad
     a_trk_rad = a_hdg_rad - a_beta_rad
@@ -348,7 +352,7 @@ while True:
 
     # a_angular_displacement_x = ((a_angular_displacement_x + (2 * math.pi)) % (2 * math.pi)) - (math.pi)
 
-    a_hdg_rad = a_hdg_rad + a_angular_accel_x * math.cos(a_roll_rad)
+    a_hdg_rad = a_hdg_rad + a_angular_vel_z * math.sin(a_roll_rad)
 
     w_x_velocity = Calc_Velocity_World('x', a_total_velocity, a_phi_rad, a_theta_rad)
     w_y_velocity = Calc_Velocity_World('y', a_total_velocity, a_phi_rad, a_theta_rad)
