@@ -278,11 +278,9 @@ while True:
         '\nPITCH: ' + str(round(Convert_Angle_Rad_To_Deg(a_pitch_rad), 2)) + \
         '\nROLL: ' + str(round(Convert_Angle_Rad_To_Deg(a_roll_rad), 2)) + \
         '\nALPHA: ' + str(round(Convert_Angle_Rad_To_Deg(a_alpha_rad), 2))
-    a_phi_deg = (a_phi_deg + 360) % 360
-    a_theta_deg = (a_theta_deg + 360) % 360
 
-    a_phi_rad = Convert_Angle_Deg_To_Rad(a_phi_deg)
-    a_theta_rad = Convert_Angle_Deg_To_Rad(a_theta_deg)
+    a_phi_rad = Limit_Angle(a_phi_rad, 0, 2*math.pi)
+    a_theta_rad = Limit_Angle(a_theta_rad, 0, 2*math.pi)
 
     a_pitch_rad = a_angular_displacement_x * math.cos(a_roll_rad)
     a_roll_rad = a_angular_displacement_y
