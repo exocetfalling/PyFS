@@ -236,6 +236,14 @@ def Convert_Angle_Rad_To_Deg(angle_rad):
 def Convert_Angle_Deg_To_Rad(angle_deg):
     return angle_deg / 57.2958
 
+def Limit_Angle(angle_rad, angle_min, angle_max):
+    if (angle_rad < angle_min):
+        return angle_max
+    elif (angle_rad > angle_max):
+        return angle_max
+    else:
+        return angle_rad
+
 def blit_text(surface, text, pos, font, color=pygame.Color('green')):
     words = [word.split(' ') for word in text.splitlines()]  # 2D array where each row is a list of words.
     space = font.size(' ')[0]  # The width of a space.
