@@ -81,12 +81,10 @@ screen = pygame.display.set_mode(SIZE, pygame.RESIZABLE)
 clock = pygame.time.Clock()
 
 # Functions
-def Calc_Velocity_World(a_vec_vel, angle_fpa, angle_trk): 
-    rot_fpa = [0, 0, 0]
-    return [0, 0, 0]
-
-def Calc_Velocity_Total_Magnitude(vel_x, vel_y, vel_z):
-    return math.sqrt(math.sqrt((pow(vel_x, 2) + pow(vel_y, 2))) + pow(vel_z, 2))
+def Convert_Vec_Frame_Acft_To_World(vec_a_frame, angle_fpa, angle_trk): 
+    vec_rot_fpa = [vec_a_frame[0], vec_a_frame[1] * math.cos(angle_fpa), vec_a_frame[2] * math.sin(angle_fpa)]
+    vec_rot_trk = [vec_rot_fpa[0] * math.sin(angle_trk), vec_rot_fpa[1] * math.cos(angle_trk), vec_rot_fpa[2]]
+    return vec_rot_trk
 
 def Calc_Force_Angular_Acc(axis_moi, force_magnitude, distance_from_pivot):
     return force_magnitude * distance_from_pivot / axis_moi
