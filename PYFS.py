@@ -13,14 +13,26 @@ import pygame.freetype  # Import the freetype module.
 # Y: aft -ve, forward +ve
 # Z: down -ve, up +ve
 
+a_vec_linear_accel = [0, 0, 0]
+a_vec_linear_velocity = [0, 0, 0]
+
+a_vec_angular_accel = [0, 0, 0]
+a_vec_angular_vel = [0, 0, 0]
+
 # For world:
 # X: west -ve, east +ve
 # Y: south -ve, north +ve
 # Z: down -ve, up +ve
 
-w_vec_velocity = [0, 0, 0]
-w_vec_pos = [0, 0, 0]
+w_vec_linear_accel = [0, 0, 0]
+w_vec_linear_velocity = [0, 0, 0]
+w_vec_linear_dis = [0, 0, 0]
 
+w_vec_angular_accel = [0, 0, 0]
+w_vec_angular_vel = [0, 0, 0]
+w_vec_angular_dis = [0, 0, 0]
+
+# Controls
 a_elevator_angle_rad = 0
 a_aileron_angle_rad = 0
 a_rudder_angle_rad = 0
@@ -69,13 +81,9 @@ screen = pygame.display.set_mode(SIZE, pygame.RESIZABLE)
 clock = pygame.time.Clock()
 
 # Functions
-def Calc_Velocity_World(axis, total_vel, angle_azimuthal, angle_polar): 
-    if axis == 'x':
-        return (total_vel * math.sin(angle_azimuthal)) * math.sin(angle_polar)
-    if axis == 'y':
-        return (total_vel * math.cos(angle_azimuthal)) * math.sin(angle_polar)
-    if axis == 'z':
-        return (total_vel * math.cos(angle_azimuthal))
+def Calc_Velocity_World(a_vec_vel, angle_fpa, angle_trk): 
+    rot_fpa = [0, 0, 0]
+    return [0, 0, 0]
 
 def Calc_Velocity_Total_Magnitude(vel_x, vel_y, vel_z):
     return math.sqrt(math.sqrt((pow(vel_x, 2) + pow(vel_y, 2))) + pow(vel_z, 2))
