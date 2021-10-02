@@ -7,81 +7,6 @@ import pygame.freetype  # Import the freetype module.
 
 # Variables
 
-# Polar coordinates as as commonly used in physics (ISO 80000-2:2019 convention): 
-# radial distance r (distance to origin), 
-# polar angle theta (angle with respect to polar axis), 
-# azimuthal angle phi (angle of rotation from the initial meridian plane).
-
-a_theta_deg = 0
-a_theta_rad = 0
-a_phi_deg = 90
-a_phi_rad = math.pi/2
-a_radial_velocity = 50
-
-a_accel_x = 0
-a_accel_y = 0
-a_accel_z = 0
-
-a_x_velocity = 0
-a_y_velocity = 50
-a_z_velocity = 0
-
-a_total_velocity = 50
-
-a_angular_accel_x = 0
-a_angular_accel_y = 0
-a_angular_accel_z = 0
-
-a_angular_vel_x = 0
-a_angular_vel_y = 0
-a_angular_vel_z = 0
-
-a_angular_displacement_x = 0
-a_angular_displacement_y = 0
-a_angular_displacement_z = 0
-
-a_airspeed_indicated = 0
-a_alt = 0
-
-a_pitch_rad = 0
-a_roll_rad = 0
-
-a_alpha_rad = 0
-a_beta_rad = 0
-
-a_fpa_rad = 0
-a_hdg_rad = 0
-a_trk_rad = 0
-
-a_cl_wing = 0
-a_cl_tailplane_horizontal = 0
-a_cl_tailplane_vertical = 0
-
-a_cl_elevator = 0
-a_cl_aileron_left = 0
-a_cl_aileron_right = 0
-a_cl_rudder = 0
-
-a_cd_wing = 0
-a_dynp = 0
-a_air_density = 1.3
-a_airspeed_true = 50
-
-a_lift_force_elevator = 0
-a_lift_force_aileron_left = 0
-a_lift_force_aileron_right = 0
-a_lift_force_rudder = 0
-
-a_lift_force_wing = 0
-a_lift_force_tailplane_horizontal = 0
-a_lift_force_tailplane_vertical = 0
-
-a_drag_force_wing = 0
-
-a_angular_damping_x = 0
-
-a_thrust_force = 0
-
 # Axes are defined as:
 # For aircraft:
 # X: left -ve, right +ve
@@ -93,16 +18,7 @@ a_thrust_force = 0
 # Y: south -ve, north +ve
 # Z: down -ve, up +ve
 
-w_x_velocity = 0
-w_y_velocity = 0
-w_z_velocity = 0
-
 w_vec_velocity = [0, 0, 0]
-
-w_x_pos = 0
-w_y_pos = 0
-w_z_pos = 0
-
 w_vec_pos = [0, 0, 0]
 
 a_elevator_angle_rad = 0
@@ -145,10 +61,6 @@ c_mass_aircraft = 1000
 c_moi_pitch = 8333
 c_moi_roll = 33333
 c_moi_yaw = 8333
-
-a_accel_x_grav = 0
-a_accel_y_grav = 0
-a_accel_z_grav = 0
 
 pygame.init()
 SIZE = WIDTH, HEIGHT = (1024, 720)
@@ -260,6 +172,7 @@ font = pygame.font.SysFont('Courier', 16)
 while True:
 
     dt = clock.tick(FPS) / 1000
+    """     
     debug_text = \
         '\nX Vel: ' + str(round(a_x_velocity, 2)) + \
         '\nY Vel: ' + str(round(a_y_velocity, 2)) + \
@@ -270,89 +183,8 @@ while True:
         '\nPITCH: ' + str(round(Convert_Angle_Rad_To_Deg(a_pitch_rad), 2)) + \
         '\nROLL: ' + str(round(Convert_Angle_Rad_To_Deg(a_roll_rad), 2)) + \
         '\nALPHA: ' + str(round(Convert_Angle_Rad_To_Deg(a_alpha_rad), 2))
-    a_phi_deg = (a_phi_deg + 360) % 360
-    a_theta_deg = (a_theta_deg + 360) % 360
 
-    a_phi_rad = Convert_Angle_Deg_To_Rad(a_phi_deg)
-    a_theta_rad = Convert_Angle_Deg_To_Rad(a_theta_deg)
-
-    a_pitch_rad = a_angular_displacement_x * math.cos(a_roll_rad)
-    a_roll_rad = a_angular_displacement_y
-    
-    a_alpha_rad = -math.asin(a_z_velocity / a_total_velocity)
-    a_beta_rad = -math.asin(a_x_velocity / a_total_velocity)
-
-    a_fpa_rad = a_pitch_rad - a_alpha_rad
-    a_trk_rad = a_hdg_rad - a_beta_rad
-
-    a_lift_force_wing = Calc_Force_Lift(a_air_density, a_airspeed_true, c_area_wing, (Calc_Lift_Coeff(a_alpha_rad + c_wing_incidence)))
-    a_lift_force_tailplane_horizontal = Calc_Force_Lift(a_air_density, a_airspeed_true, c_area_tailplane_horizontal, (Calc_Lift_Coeff(a_alpha_rad)))
-    a_lift_force_tailplane_vertical = Calc_Force_Lift(a_air_density, a_airspeed_true, c_area_tailplane_vertical, (Calc_Lift_Coeff(a_beta_rad)))
-    
-    a_drag_force_wing = Calc_Force_Drag(a_air_density, a_airspeed_true, c_area_wing, (Calc_Drag_Coeff(a_alpha_rad + c_wing_incidence)))
-
-    a_airspeed_true = a_total_velocity
-
-    a_accel_x_grav = Calc_Acc_Gravity('x', a_roll_rad, a_pitch_rad)
-    a_accel_y_grav = Calc_Acc_Gravity('y', a_roll_rad, a_pitch_rad)
-    a_accel_z_grav = Calc_Acc_Gravity('z', a_roll_rad, a_pitch_rad)
-
-    a_accel_x = \
-        Calc_Force_Acc(a_lift_force_rudder, c_mass_aircraft) + \
-        Calc_Force_Acc(a_lift_force_tailplane_vertical, c_mass_aircraft) + \
-        Calc_Acc_Gravity('x', a_roll_rad, a_pitch_rad)
-    a_accel_y = \
-        Calc_Force_Acc(a_thrust_force, c_mass_aircraft) + \
-        Calc_Force_Acc(a_drag_force_wing, c_mass_aircraft) + \
-        Calc_Acc_Gravity('y', a_roll_rad, a_pitch_rad)
-    a_accel_z = \
-        Calc_Force_Acc(a_lift_force_wing, c_mass_aircraft) + \
-        Calc_Force_Acc(a_lift_force_elevator, c_mass_aircraft) + \
-        Calc_Acc_Gravity('z', a_roll_rad, a_pitch_rad)
-
-    a_x_velocity = a_x_velocity + Calc_Integral(a_accel_x, dt)
-    a_y_velocity = a_y_velocity + Calc_Integral(a_accel_y, dt)
-    a_z_velocity = a_z_velocity + Calc_Integral(a_accel_z, dt)
-
-    # a_total_velocity = Calc_Velocity_Total_Magnitude(a_x_velocity, a_y_velocity, a_z_velocity)
-    a_total_velocity = math.hypot(a_x_velocity, a_y_velocity, a_z_velocity)
-    
-
-    a_angular_accel_x = \
-        Calc_Force_Angular_Acc(c_moi_pitch, a_lift_force_tailplane_horizontal, c_position_tailplane_horizontal) + \
-        Calc_Force_Angular_Acc(c_moi_pitch, a_lift_force_elevator, c_position_elevator) + \
-        Calc_Force_Angular_Acc(c_moi_pitch, a_lift_force_wing, c_position_wing) + \
-        Calc_Drag_Angular(a_air_density, a_angular_vel_x, c_area_rot_drag_x)
-    a_angular_accel_y = \
-        Calc_Force_Angular_Acc(c_moi_roll, a_lift_force_aileron_left, c_position_aileron_left) + \
-        Calc_Force_Angular_Acc(c_moi_roll, a_lift_force_aileron_right, c_position_aileron_right) + \
-        Calc_Drag_Angular(a_air_density, a_angular_vel_y, c_area_rot_drag_y)
-    a_angular_accel_z = \
-        Calc_Force_Angular_Acc(c_moi_yaw, a_lift_force_tailplane_vertical, c_position_tailplane_vertical) + \
-        Calc_Force_Angular_Acc(c_moi_yaw, a_lift_force_rudder, c_position_rudder) + \
-        Calc_Drag_Angular(a_air_density, a_angular_vel_z, c_area_rot_drag_z)
-
-    a_angular_vel_x = a_angular_vel_x + Calc_Integral(a_angular_accel_x, dt)
-    a_angular_vel_y = a_angular_vel_y + Calc_Integral(a_angular_accel_y, dt)
-    a_angular_vel_z = a_angular_vel_z + Calc_Integral(a_angular_accel_z, dt)
-
-    a_angular_displacement_x = a_angular_displacement_x + Calc_Integral(a_angular_vel_x, dt)
-    a_angular_displacement_y = a_angular_displacement_y + Calc_Integral(a_angular_vel_y, dt)
-    a_angular_displacement_z = a_angular_displacement_z + Calc_Integral(a_angular_vel_z, dt)
-
-    # a_angular_displacement_x = ((a_angular_displacement_x + (2 * math.pi)) % (2 * math.pi)) - (math.pi)
-
-    a_hdg_rad = a_hdg_rad + a_angular_accel_x * math.cos(a_roll_rad)
-
-    w_x_velocity = Calc_Velocity_World('x', a_total_velocity, a_phi_rad, a_theta_rad)
-    w_y_velocity = Calc_Velocity_World('y', a_total_velocity, a_phi_rad, a_theta_rad)
-    w_z_velocity = Calc_Velocity_World('z', a_total_velocity, a_roll_rad, a_theta_rad)
-
-    w_vec_velocity = [w_x_velocity, w_y_velocity, w_z_velocity]
-
-    w_x_pos = w_x_pos + w_x_velocity * dt
-    w_y_pos = w_y_pos + w_y_velocity * dt
-    w_z_pos = w_z_pos + w_z_velocity * dt
+    """
 
     keys=pygame.key.get_pressed()
 
@@ -373,5 +205,5 @@ while True:
             quit()
 
     screen.fill(pygame.Color('black'))
-    blit_text(screen, debug_text, (20, 20), font)
+    #blit_text(screen, debug_text, (20, 20), font)
     pygame.display.update()
