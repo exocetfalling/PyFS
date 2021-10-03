@@ -86,6 +86,11 @@ def Convert_Vec_Frame_Acft_To_World(vec_a_frame, angle_fpa, angle_trk):
     vec_rot_trk = [vec_rot_fpa[0] * math.sin(angle_trk), vec_rot_fpa[1] * math.cos(angle_trk), vec_rot_fpa[2]]
     return vec_rot_trk
 
+def Convert_Vec_Gravity_Acft_To_World(angle_pitch, angle_roll): 
+    vec_gravity_world = [0, 0, -9.8065]
+    vec_gravity_acft = [vec_gravity_world[2] * math.sin(-angle_roll), vec_gravity_world[2] * math.sin(-angle_pitch), vec_gravity_world[2] * math.cos(-angle_roll)]
+    return vec_gravity_acft
+
 def Calc_Force_Angular_Acc(axis_moi, force_magnitude, distance_from_pivot):
     return force_magnitude * distance_from_pivot / axis_moi
 
@@ -139,15 +144,6 @@ def Calc_Drag_Angular(air_density, velocity_rotational, surface_area):
     return -air_density * velocity_rotational * surface_area
     #return -0.5 * air_density * pow(velocity_rotational, 2) * surface_area
 
-
-def Calc_Acc_Gravity(axis, angle_roll, angle_pitch):
-    if (axis == 'x'):
-        return -9.8065 * math.sin(angle_roll)
-    if (axis == 'y'):
-        return -9.8065 * math.sin(angle_pitch)
-    if (axis == 'z'):
-        return -9.8065 * math.cos(angle_pitch)
-
 def Convert_Angle_Rad_To_Deg(angle_rad):
     return angle_rad * 57.2958
 
@@ -178,38 +174,40 @@ font = pygame.font.SysFont('Courier', 16)
 while True:
 
     dt = clock.tick(FPS) / 1000
-    """     
-    debug_text = \
-        '\nX Vel: ' + str(round(a_x_velocity, 2)) + \
-        '\nY Vel: ' + str(round(a_y_velocity, 2)) + \
-        '\nZ Vel: ' + str(round(a_z_velocity, 2)) + \
-        '\nTotal: ' + str(round(a_total_velocity, 2)) + \
-        '\nPITCH ACCEL: ' + str(round(a_angular_accel_x, 2)) + \
-        '\nPITCH VEL: ' + str(round(a_angular_vel_x, 2)) + \
-        '\nPITCH: ' + str(round(Convert_Angle_Rad_To_Deg(a_pitch_rad), 2)) + \
-        '\nROLL: ' + str(round(Convert_Angle_Rad_To_Deg(a_roll_rad), 2)) + \
-        '\nALPHA: ' + str(round(Convert_Angle_Rad_To_Deg(a_alpha_rad), 2))
 
-    """
+    a_vec_linear_accel = Convert_Vec_Gravity_Acft_To_World(w_vec_angular_dis[0], w_vec_angular_dis[1])
+
+    debug_text = \
+        '\nX Vel: '        + str(round(a_vec_linear_velocity[0], 2)) + \
+        '\nY Vel: '        + str(round(a_vec_linear_velocity[1], 2)) + \
+        '\nZ Vel: '        + str(round(a_vec_linear_velocity[2], 2)) + \
+        '\nX Acc: '        + str(round(a_vec_linear_accel[0], 2)) + \
+        '\nY Acc: '        + str(round(a_vec_linear_accel[1], 2)) + \
+        '\nZ Acc: '        + str(round(a_vec_linear_accel[2], 2)) + \
+        '\nPITCH ACCEL: '  + str(round(a_vec_angular_accel[0], 2)) + \
+        '\nPITCH VEL: '    + str(round(a_vec_angular_vel[0], 2)) + \
+        '\nPITCH: '        + str(round(Convert_Angle_Rad_To_Deg(w_vec_angular_dis[0]), 2)) + \
+        '\nROLL: '         + str(round(Convert_Angle_Rad_To_Deg(w_vec_angular_dis[1]), 2)) + \
+        '\nHDG: '          + str(round(Convert_Angle_Rad_To_Deg(w_vec_angular_dis[2]), 2))
 
     keys=pygame.key.get_pressed()
 
     if keys[pygame.K_w]:
-        a_angular_vel_x = -math.pi/30
+        w_vec_angular_dis[0] = w_vec_angular_dis[0] - math.pi/180
 
     if keys[pygame.K_s]:
-        a_angular_vel_x =  math.pi/30
+        w_vec_angular_dis[0] = w_vec_angular_dis[0] + math.pi/180
 
     if keys[pygame.K_a]:
-        a_angular_vel_y = -math.pi/30
+        w_vec_angular_dis[1] = w_vec_angular_dis[1] - math.pi/180
 
     if keys[pygame.K_d]:
-        a_angular_vel_y =  math.pi/30
+        w_vec_angular_dis[1] = w_vec_angular_dis[1] + math.pi/180
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             quit()
 
     screen.fill(pygame.Color('black'))
-    #blit_text(screen, debug_text, (20, 20), font)
+    blit_text(screen, debug_text, (20, 20), font)
     pygame.display.update()
