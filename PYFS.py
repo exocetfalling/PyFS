@@ -113,6 +113,12 @@ def Limit_Angle(angle_rad, angle_min, angle_max):
 def Calc_Integral(value, time_interval):
     return value * time_interval
 
+def Calc_Airflow_Angle(vel_side, vel_fwd):
+    if (vel_fwd != 0):
+        return math.atan2(vel_side / vel_fwd)
+    else:
+        return 0
+
 def Calc_Lift_Coeff(angle_alpha_rad):
     
     x1 = -math.pi
@@ -188,9 +194,9 @@ while True:
 
     a_vec_linear_accel = Convert_Vec_Gravity_Acc_World_To_Acft(w_vec_angular_dis[0], w_vec_angular_dis[1])
 
-    a_alpha = math.atan2(a_vec_linear_velocity[2] / a_vec_linear_velocity[1])
+    a_alpha = Calc_Airflow_Angle(a_vec_linear_velocity[2], a_vec_linear_velocity[1])
     a_wing_cl = Calc_Lift_Coeff(a_alpha)
-    
+
     w_vec_angular_dis[0] = Limit_Angle(w_vec_angular_dis[0], -math.pi, +math.pi)
     w_vec_angular_dis[1] = Limit_Angle(w_vec_angular_dis[1], -math.pi, +math.pi)
     w_vec_angular_dis[2] = Limit_Angle(w_vec_angular_dis[2], 0, +2*math.pi)
