@@ -203,8 +203,6 @@ while True:
 
     dt = clock.tick(FPS) / 1000
 
-    a_vec_linear_accel = Convert_Vec_Gravity_Acc_World_To_Acft(w_vec_angular_dis[0], w_vec_angular_dis[1])
-
     a_alpha = Calc_Airflow_Angle(a_vec_linear_velocity[2], a_vec_linear_velocity[1])
     a_beta = Calc_Airflow_Angle(a_vec_linear_velocity[0], a_vec_linear_velocity[1])
 
@@ -217,7 +215,7 @@ while True:
     w_vec_angular_dis[1] = Limit_Angle(w_vec_angular_dis[1], -math.pi, +math.pi)
     w_vec_angular_dis[2] = Limit_Angle(w_vec_angular_dis[2], 0, +2*math.pi)
 
-    a_vec_linear_accel = [0, 0, 0]
+    a_vec_linear_accel = Convert_Vec_Gravity_Acc_World_To_Acft(w_vec_angular_dis[0], w_vec_angular_dis[1])
     a_vec_linear_velocity = Calc_Integral_Vector(a_vec_linear_velocity, a_vec_linear_accel, dt)
     w_vec_linear_velocity = Convert_Vec_Frame_Acft_To_World(a_vec_linear_velocity, a_fpa, a_trk)
     w_vec_linear_dis = Calc_Integral_Vector(w_vec_linear_dis, w_vec_linear_velocity, dt)
