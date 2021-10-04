@@ -18,7 +18,9 @@ a_vec_linear_velocity = [0, 0, 0]
 
 a_vec_angular_accel = [0, 0, 0]
 a_vec_angular_vel = [0, 0, 0]
-
+a_alpha = 0
+a_beta = 0
+a_wing_cl = 0
 # For world:
 # X: west -ve, east +ve
 # Y: south -ve, north +ve
@@ -185,6 +187,9 @@ while True:
     dt = clock.tick(FPS) / 1000
 
     a_vec_linear_accel = Convert_Vec_Gravity_Acc_World_To_Acft(w_vec_angular_dis[0], w_vec_angular_dis[1])
+
+    a_alpha = math.atan2(a_vec_linear_velocity[2] / a_vec_linear_velocity[1])
+    a_wing_cl = Calc_Lift_Coeff(a_alpha)
     
     w_vec_angular_dis[0] = Limit_Angle(w_vec_angular_dis[0], -math.pi, +math.pi)
     w_vec_angular_dis[1] = Limit_Angle(w_vec_angular_dis[1], -math.pi, +math.pi)
@@ -200,6 +205,8 @@ while True:
         '\nZ Acc: '        + str(round(a_vec_linear_accel[2], 2)) + \
         '\nPITCH ACCEL: '  + str(round(a_vec_angular_accel[0], 2)) + \
         '\nPITCH VEL: '    + str(round(a_vec_angular_vel[0], 2)) + \
+        '\nALPHA: '    + str(round(a_alpha, 2)) + \
+        '\nCL: '    + str(round(a_alpha, 2)) + \
         '\nPITCH: '        + str(round(Convert_Angle_Rad_To_Deg(w_vec_angular_dis[0]), 2)) + \
         '\nROLL: '         + str(round(Convert_Angle_Rad_To_Deg(w_vec_angular_dis[1]), 2)) + \
         '\nHDG: '          + str(round(Convert_Angle_Rad_To_Deg(w_vec_angular_dis[2]), 2))
