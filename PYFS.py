@@ -88,8 +88,9 @@ def Convert_Vec_Frame_Acft_To_World(vec_a_frame, angle_fpa, angle_trk):
 
 def Convert_Vec_Gravity_Acft_To_World(angle_pitch, angle_roll): 
     vec_gravity_world = [0, 0, -9.8065]
-    vec_gravity_acft = [vec_gravity_world[2] * math.sin(-angle_roll), vec_gravity_world[2] * math.sin(-angle_pitch), vec_gravity_world[2] * math.cos(-angle_roll)]
-    return vec_gravity_acft
+    vec_gravity_rot_pitch = [0, vec_gravity_world[2] * math.sin(angle_pitch), vec_gravity_world[2] * math.cos(angle_pitch)]
+    vec_gravity_rot_roll = [vec_gravity_rot_pitch[2] * math.sin(-angle_roll), vec_gravity_rot_pitch[1], vec_gravity_rot_pitch[2] * math.cos(tangle_roll)]
+    return vec_gravity_rot_roll
 
 def Calc_Force_Angular_Acc(axis_moi, force_magnitude, distance_from_pivot):
     return force_magnitude * distance_from_pivot / axis_moi
@@ -203,6 +204,10 @@ while True:
 
     if keys[pygame.K_d]:
         w_vec_angular_dis[1] = w_vec_angular_dis[1] + math.pi/180
+
+    if keys[pygame.K_r]:
+        w_vec_angular_dis = [0, 0, 0]
+
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
