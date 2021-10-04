@@ -14,7 +14,8 @@ import pygame.freetype  # Import the freetype module.
 # Z: down -ve, up +ve
 
 a_vec_linear_accel = [0, 0, 0]
-a_vec_linear_velocity = [0, 0, 0]
+# a_vec_linear_velocity = [0, 0, 0]
+a_vec_linear_velocity = [0, 50, -5]
 
 a_vec_angular_accel = [0, 0, 0]
 a_vec_angular_vel = [0, 0, 0]
@@ -115,7 +116,7 @@ def Calc_Integral(value, time_interval):
 
 def Calc_Airflow_Angle(vel_side, vel_fwd):
     if (vel_fwd != 0):
-        return math.atan2(vel_side / vel_fwd)
+        return -math.atan2(vel_side, vel_fwd)
     else:
         return 0
 
@@ -211,8 +212,8 @@ while True:
         '\nZ Acc: '        + str(round(a_vec_linear_accel[2], 2)) + \
         '\nPITCH ACCEL: '  + str(round(a_vec_angular_accel[0], 2)) + \
         '\nPITCH VEL: '    + str(round(a_vec_angular_vel[0], 2)) + \
-        '\nALPHA: '    + str(round(a_alpha, 2)) + \
-        '\nCL: '    + str(round(a_alpha, 2)) + \
+        '\nALPHA: '        + str(round(a_alpha, 2)) + \
+        '\nCL: '           + str(round(a_alpha, 2)) + \
         '\nPITCH: '        + str(round(Convert_Angle_Rad_To_Deg(w_vec_angular_dis[0]), 2)) + \
         '\nROLL: '         + str(round(Convert_Angle_Rad_To_Deg(w_vec_angular_dis[1]), 2)) + \
         '\nHDG: '          + str(round(Convert_Angle_Rad_To_Deg(w_vec_angular_dis[2]), 2))
