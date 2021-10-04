@@ -1,4 +1,4 @@
 # PyFS
 Python Flight Sim
 
-Requires **keyboard** library.
+Requires **pygame** library.

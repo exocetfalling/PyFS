@@ -30,6 +30,8 @@ w_vec_linear_dis = [0, 0, 0]
 
 w_vec_angular_accel = [0, 0, 0]
 w_vec_angular_vel = [0, 0, 0]
+
+# [pitch, roll, heading]
 w_vec_angular_dis = [0, 0, 0]
 
 # Controls
@@ -60,9 +62,7 @@ c_area_aileron = 0.5
 c_area_elevator = 0.5
 c_area_rudder = 0.5
 
-c_area_rot_drag_x = 40
-c_area_rot_drag_y = 40
-c_area_rot_drag_z = 30
+c_area_rot_drag = [40, 40, 30]
 
 # Masses in kg
 c_mass_aircraft = 1000
@@ -70,9 +70,8 @@ c_mass_aircraft = 1000
 # MOIs in kg m^2
 # Using formula:
 # MOI = 1/12 * mass * (length)^2
-c_moi_pitch = 8333
-c_moi_roll = 33333
-c_moi_yaw = 8333
+c_moi = [8333, 33333, 8333]
+
 
 pygame.init()
 SIZE = WIDTH, HEIGHT = (1024, 720)
@@ -86,10 +85,10 @@ def Convert_Vec_Frame_Acft_To_World(vec_a_frame, angle_fpa, angle_trk):
     vec_rot_trk = [vec_rot_fpa[0] * math.sin(angle_trk), vec_rot_fpa[1] * math.cos(angle_trk), vec_rot_fpa[2]]
     return vec_rot_trk
 
-def Convert_Vec_Gravity_Acft_To_World(angle_pitch, angle_roll): 
+def Convert_Vec_Gravity_Acc_World_To_Acft(angle_pitch, angle_roll): 
     vec_gravity_world = [0, 0, -9.8065]
     vec_gravity_rot_pitch = [0, vec_gravity_world[2] * math.sin(angle_pitch), vec_gravity_world[2] * math.cos(angle_pitch)]
-    vec_gravity_rot_roll = [vec_gravity_rot_pitch[2] * math.sin(-angle_roll), vec_gravity_rot_pitch[1], vec_gravity_rot_pitch[2] * math.cos(tangle_roll)]
+    vec_gravity_rot_roll = [vec_gravity_rot_pitch[2] * math.sin(-angle_roll), vec_gravity_rot_pitch[1], vec_gravity_rot_pitch[2] * math.cos(angle_roll)]
     return vec_gravity_rot_roll
 
 def Calc_Force_Angular_Acc(axis_moi, force_magnitude, distance_from_pivot):
@@ -100,6 +99,14 @@ def Calc_Angular_Vel():
 
 def Calc_Force_Acc(force_magnitude, mass_kg):
     return force_magnitude / mass_kg
+
+def Limit_Angle(angle_rad, angle_min, angle_max):
+    if (angle_rad < angle_min):
+        return angle_rad + 2*math.pi
+    elif (angle_rad > angle_max):
+        return angle_rad - 2*math.pi
+    else:
+        return angle_rad
 
 def Calc_Integral(value, time_interval):
     return value * time_interval
@@ -130,6 +137,7 @@ def Calc_Lift_Coeff(angle_alpha_rad):
 
     else:
         raise NameError('CalcCLErr')
+
 
 
 def Calc_Drag_Coeff(angle_rad):
@@ -176,7 +184,12 @@ while True:
 
     dt = clock.tick(FPS) / 1000
 
-    a_vec_linear_accel = Convert_Vec_Gravity_Acft_To_World(w_vec_angular_dis[0], w_vec_angular_dis[1])
+    a_vec_linear_accel = Convert_Vec_Gravity_Acc_World_To_Acft(w_vec_angular_dis[0], w_vec_angular_dis[1])
+    
+    w_vec_angular_dis[0] = Limit_Angle(w_vec_angular_dis[0], -math.pi, +math.pi)
+    w_vec_angular_dis[1] = Limit_Angle(w_vec_angular_dis[1], -math.pi, +math.pi)
+    w_vec_angular_dis[2] = Limit_Angle(w_vec_angular_dis[2], 0, +2*math.pi)
+
 
     debug_text = \
         '\nX Vel: '        + str(round(a_vec_linear_velocity[0], 2)) + \
@@ -204,6 +217,13 @@ while True:
 
     if keys[pygame.K_d]:
         w_vec_angular_dis[1] = w_vec_angular_dis[1] + math.pi/180
+
+    if keys[pygame.K_q]:
+        w_vec_angular_dis[2] = w_vec_angular_dis[2] - math.pi/180
+
+    if keys[pygame.K_e]:
+        w_vec_angular_dis[2] = w_vec_angular_dis[2] + math.pi/180
+
 
     if keys[pygame.K_r]:
         w_vec_angular_dis = [0, 0, 0]
