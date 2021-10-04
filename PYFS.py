@@ -14,14 +14,17 @@ import pygame.freetype  # Import the freetype module.
 # Z: down -ve, up +ve
 
 a_vec_linear_accel = [0, 0, 0]
-# a_vec_linear_velocity = [0, 0, 0]
-a_vec_linear_velocity = [0, 50, -5]
+a_vec_linear_velocity = [0, 0, 0]
 
 a_vec_angular_accel = [0, 0, 0]
 a_vec_angular_vel = [0, 0, 0]
 a_alpha = 0
 a_beta = 0
 a_wing_cl = 0
+
+a_fpa = 0
+a_trk = 0
+
 # For world:
 # X: west -ve, east +ve
 # Y: south -ve, north +ve
@@ -111,7 +114,7 @@ def Limit_Angle(angle_rad, angle_min, angle_max):
     else:
         return angle_rad
 
-def Calc_Integral(value, time_interval):
+def Calc_Integral_Scalar(value, time_interval):
     return value * time_interval
 
 def Calc_Airflow_Angle(vel_side, vel_fwd):
@@ -147,7 +150,14 @@ def Calc_Lift_Coeff(angle_alpha_rad):
     else:
         raise NameError('CalcCLErr')
 
+def Calc_Integral_Vector(vec_current, vec_derivative, time_interval):
+    vec_output = [0, 0, 0]
 
+    vec_output[0] = vec_current[0] + vec_derivative[0] * time_interval
+    vec_output[1] = vec_current[1] + vec_derivative[1] * time_interval
+    vec_output[2] = vec_current[2] + vec_derivative[2] * time_interval
+
+    return vec_output
 
 def Calc_Drag_Coeff(angle_rad):
     return 0.05 * math.sin(angle_rad)
@@ -196,14 +206,25 @@ while True:
     a_vec_linear_accel = Convert_Vec_Gravity_Acc_World_To_Acft(w_vec_angular_dis[0], w_vec_angular_dis[1])
 
     a_alpha = Calc_Airflow_Angle(a_vec_linear_velocity[2], a_vec_linear_velocity[1])
+    a_beta = Calc_Airflow_Angle(a_vec_linear_velocity[0], a_vec_linear_velocity[1])
+
+    a_fpa = Calc_Airflow_Angle(w_vec_linear_velocity[2], w_vec_linear_velocity[1])
+    a_trk = Calc_Airflow_Angle(w_vec_linear_velocity[0], w_vec_linear_velocity[1])
+
     a_wing_cl = Calc_Lift_Coeff(a_alpha)
 
     w_vec_angular_dis[0] = Limit_Angle(w_vec_angular_dis[0], -math.pi, +math.pi)
     w_vec_angular_dis[1] = Limit_Angle(w_vec_angular_dis[1], -math.pi, +math.pi)
     w_vec_angular_dis[2] = Limit_Angle(w_vec_angular_dis[2], 0, +2*math.pi)
 
+    a_vec_linear_accel = [0, 0, 0]
+    a_vec_linear_velocity = Calc_Integral_Vector(a_vec_linear_velocity, a_vec_linear_accel, dt)
+    w_vec_linear_velocity = Convert_Vec_Frame_Acft_To_World(a_vec_linear_velocity, a_fpa, a_trk)
+    w_vec_linear_dis = Calc_Integral_Vector(w_vec_linear_dis, w_vec_linear_velocity, dt)
+
 
     debug_text = \
+        '\nACFT:'            + \
         '\nX Vel: '        + str(round(a_vec_linear_velocity[0], 2)) + \
         '\nY Vel: '        + str(round(a_vec_linear_velocity[1], 2)) + \
         '\nZ Vel: '        + str(round(a_vec_linear_velocity[2], 2)) + \
@@ -214,6 +235,13 @@ while True:
         '\nPITCH VEL: '    + str(round(a_vec_angular_vel[0], 2)) + \
         '\nALPHA: '        + str(round(a_alpha, 2)) + \
         '\nCL: '           + str(round(a_alpha, 2)) + \
+        '\nWORLD:'           + \
+        '\nX Vel: '        + str(round(w_vec_linear_velocity[0], 2)) + \
+        '\nY Vel: '        + str(round(w_vec_linear_velocity[1], 2)) + \
+        '\nZ Vel: '        + str(round(w_vec_linear_velocity[2], 2)) + \
+        '\nX Acc: '        + str(round(w_vec_linear_accel[0], 2)) + \
+        '\nY Acc: '        + str(round(w_vec_linear_accel[1], 2)) + \
+        '\nZ Acc: '        + str(round(w_vec_linear_accel[2], 2)) + \
         '\nPITCH: '        + str(round(Convert_Angle_Rad_To_Deg(w_vec_angular_dis[0]), 2)) + \
         '\nROLL: '         + str(round(Convert_Angle_Rad_To_Deg(w_vec_angular_dis[1]), 2)) + \
         '\nHDG: '          + str(round(Convert_Angle_Rad_To_Deg(w_vec_angular_dis[2]), 2))
