@@ -106,6 +106,9 @@ def Calc_Vec_Mag(vec_input):
     mag_vec = math.sqrt(pow(vec_input[0], 2) + pow(vec_input[1], 2) + pow(vec_input[2], 2))
     return mag_vec
 
+def Calc_Delta_Vel_From_Rot(vec_lin_vel, vec_ang_vel):
+    pass
+
 def Calc_Force_Acc(force_magnitude, mass_kg):
     return force_magnitude / mass_kg
 
