@@ -231,7 +231,7 @@ while True:
 
 
     debug_text = \
-        '\nACFT:'            + \
+        '\nACFT:'          + \
         '\nX Vel: '        + str(round(a_vec_linear_velocity[0], 2)) + \
         '\nY Vel: '        + str(round(a_vec_linear_velocity[1], 2)) + \
         '\nZ Vel: '        + str(round(a_vec_linear_velocity[2], 2)) + \
