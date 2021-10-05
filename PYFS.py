@@ -209,8 +209,8 @@ while True:
     a_alpha = Calc_Airflow_Angle(a_vec_linear_velocity[2], a_mag_linear_velocity)
     a_beta = Calc_Airflow_Angle(a_vec_linear_velocity[0], a_mag_linear_velocity)
 
-    a_fpa = Calc_Airflow_Angle(w_vec_linear_velocity[2], w_mag_linear_velocity)
-    a_trk = Calc_Airflow_Angle(w_vec_linear_velocity[0], w_mag_linear_velocity)
+    a_fpa = w_vec_angular_dis[0] - a_alpha
+    a_trk = w_vec_angular_dis[2] - a_beta
 
     a_wing_cl = Calc_Lift_Coeff(a_alpha)
 
