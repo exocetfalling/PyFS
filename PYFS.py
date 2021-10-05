@@ -15,6 +15,7 @@ import pygame.freetype  # Import the freetype module.
 
 a_vec_linear_accel = [0, 0, 0]
 a_vec_linear_velocity = [0, 0, 0]
+a_mag_linear_velocity = 0
 
 a_vec_angular_accel = [0, 0, 0]
 a_vec_angular_vel = [0, 0, 0]
@@ -32,6 +33,7 @@ a_trk = 0
 
 w_vec_linear_accel = [0, 0, 0]
 w_vec_linear_velocity = [0, 0, 0]
+w_mag_linear_velocity = 0
 w_vec_linear_dis = [0, 0, 0]
 
 w_vec_angular_accel = [0, 0, 0]
@@ -100,8 +102,9 @@ def Convert_Vec_Gravity_Acc_World_To_Acft(angle_pitch, angle_roll):
 def Calc_Force_Angular_Acc(axis_moi, force_magnitude, distance_from_pivot):
     return force_magnitude * distance_from_pivot / axis_moi
 
-def Calc_Angular_Vel():
-    pass
+def Calc_Vec_Mag(vec_input):
+    mag_vec = math.sqrt(pow(vec_input[0], 2) + pow(vec_input[1], 2) + pow(vec_input[2], 2))
+    return mag_vec
 
 def Calc_Force_Acc(force_magnitude, mass_kg):
     return force_magnitude / mass_kg
@@ -117,9 +120,9 @@ def Limit_Angle(angle_rad, angle_min, angle_max):
 def Calc_Integral_Scalar(value, time_interval):
     return value * time_interval
 
-def Calc_Airflow_Angle(vel_side, vel_fwd):
-    if (vel_fwd != 0):
-        return -math.atan2(vel_side, vel_fwd)
+def Calc_Airflow_Angle(vel_side, vel_total_mag):
+    if (vel_total_mag != 0):
+        return -math.asin(vel_side / vel_total_mag)
     else:
         return 0
 
@@ -203,11 +206,11 @@ while True:
 
     dt = clock.tick(FPS) / 1000
 
-    a_alpha = Calc_Airflow_Angle(a_vec_linear_velocity[2], a_vec_linear_velocity[1])
-    a_beta = Calc_Airflow_Angle(a_vec_linear_velocity[0], a_vec_linear_velocity[1])
+    a_alpha = Calc_Airflow_Angle(a_vec_linear_velocity[2], a_mag_linear_velocity)
+    a_beta = Calc_Airflow_Angle(a_vec_linear_velocity[0], a_mag_linear_velocity)
 
-    a_fpa = Calc_Airflow_Angle(w_vec_linear_velocity[2], w_vec_linear_velocity[1])
-    a_trk = Calc_Airflow_Angle(w_vec_linear_velocity[0], w_vec_linear_velocity[1])
+    a_fpa = Calc_Airflow_Angle(w_vec_linear_velocity[2], w_mag_linear_velocity)
+    a_trk = Calc_Airflow_Angle(w_vec_linear_velocity[0], w_mag_linear_velocity)
 
     a_wing_cl = Calc_Lift_Coeff(a_alpha)
 
@@ -217,7 +220,10 @@ while True:
 
     a_vec_linear_accel = Convert_Vec_Gravity_Acc_World_To_Acft(w_vec_angular_dis[0], w_vec_angular_dis[1])
     a_vec_linear_velocity = Calc_Integral_Vector(a_vec_linear_velocity, a_vec_linear_accel, dt)
-    w_vec_linear_velocity = Convert_Vec_Frame_Acft_To_World(a_vec_linear_velocity, a_fpa, a_trk)
+    a_mag_linear_velocity = Calc_Vec_Mag(a_vec_linear_velocity)
+    w_vec_linear_accel = Convert_Vec_Frame_Acft_To_World(a_vec_linear_accel, a_fpa, a_trk)
+    w_vec_linear_velocity = Calc_Integral_Vector(w_vec_linear_velocity, w_vec_linear_accel, dt)
+    w_mag_linear_velocity = Calc_Vec_Mag(w_vec_linear_velocity)
     w_vec_linear_dis = Calc_Integral_Vector(w_vec_linear_dis, w_vec_linear_velocity, dt)
 
 
@@ -231,16 +237,17 @@ while True:
         '\nZ Acc: '        + str(round(a_vec_linear_accel[2], 2)) + \
         '\nPITCH ACCEL: '  + str(round(a_vec_angular_accel[0], 2)) + \
         '\nPITCH VEL: '    + str(round(a_vec_angular_vel[0], 2)) + \
-        '\nALPHA: '        + str(round(a_alpha, 2)) + \
-        '\nCL: '           + str(round(a_alpha, 2)) + \
-        '\nWORLD:'           + \
+        '\nALPHA: '        + str(round(Convert_Angle_Rad_To_Deg(a_alpha), 2)) + \
+        '\nCL: '           + str(round(a_wing_cl, 2)) + \
+        '\nWORLD:'         + \
         '\nX Vel: '        + str(round(w_vec_linear_velocity[0], 2)) + \
         '\nY Vel: '        + str(round(w_vec_linear_velocity[1], 2)) + \
         '\nZ Vel: '        + str(round(w_vec_linear_velocity[2], 2)) + \
         '\nX Acc: '        + str(round(w_vec_linear_accel[0], 2)) + \
         '\nY Acc: '        + str(round(w_vec_linear_accel[1], 2)) + \
         '\nZ Acc: '        + str(round(w_vec_linear_accel[2], 2)) + \
-        '\nPITCH: '        + str(round(Convert_Angle_Rad_To_Deg(w_vec_angular_dis[0]), 2)) + \
+        '\nPITCH: '        + str(round((w_vec_angular_dis[0]), 2)) + \
+        '\nFPA: '          + str(round(Convert_Angle_Rad_To_Deg(a_fpa), 2)) + \
         '\nROLL: '         + str(round(Convert_Angle_Rad_To_Deg(w_vec_angular_dis[1]), 2)) + \
         '\nHDG: '          + str(round(Convert_Angle_Rad_To_Deg(w_vec_angular_dis[2]), 2))
 
