@@ -89,8 +89,8 @@ clock = pygame.time.Clock()
 
 # Functions
 def Convert_Vec_Frame_Acft_To_World(vec_a_frame, angle_fpa, angle_trk): 
-    vec_rot_fpa = [vec_a_frame[0], vec_a_frame[1] * math.cos(angle_fpa), vec_a_frame[2] * math.sin(angle_fpa)]
-    vec_rot_trk = [vec_rot_fpa[0] * math.sin(angle_trk), vec_rot_fpa[1] * math.cos(angle_trk), vec_rot_fpa[2]]
+    vec_rot_fpa = [vec_a_frame[0], vec_a_frame[1] * math.cos(-angle_fpa), vec_a_frame[2] * math.sin(-angle_fpa)]
+    vec_rot_trk = [vec_rot_fpa[0] * math.sin(-angle_trk), vec_rot_fpa[1] * math.cos(-angle_trk), vec_rot_fpa[2]]
     return vec_rot_trk
 
 def Convert_Vec_Gravity_Acc_World_To_Acft(angle_pitch, angle_roll): 
