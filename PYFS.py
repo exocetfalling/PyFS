@@ -246,7 +246,7 @@ while True:
         '\nX Acc: '        + str(round(w_vec_linear_accel[0], 2)) + \
         '\nY Acc: '        + str(round(w_vec_linear_accel[1], 2)) + \
         '\nZ Acc: '        + str(round(w_vec_linear_accel[2], 2)) + \
-        '\nPITCH: '        + str(round((w_vec_angular_dis[0]), 2)) + \
+        '\nPITCH: '        + str(round(Convert_Angle_Rad_To_Deg(w_vec_angular_dis[0]), 2)) + \
         '\nFPA: '          + str(round(Convert_Angle_Rad_To_Deg(a_fpa), 2)) + \
         '\nROLL: '         + str(round(Convert_Angle_Rad_To_Deg(w_vec_angular_dis[1]), 2)) + \
         '\nHDG: '          + str(round(Convert_Angle_Rad_To_Deg(w_vec_angular_dis[2]), 2))
