@@ -217,17 +217,17 @@ while True:
 
     a_wing_cl = Calc_Lift_Coeff(a_alpha)
 
-    w_vec_angular_dis[0] = Limit_Angle(w_vec_angular_dis[0], -math.pi, +math.pi)
-    w_vec_angular_dis[1] = Limit_Angle(w_vec_angular_dis[1], -math.pi, +math.pi)
-    w_vec_angular_dis[2] = Limit_Angle(w_vec_angular_dis[2], 0, +2*math.pi)
+    w_vec_angular_dis[0]  = Limit_Angle(w_vec_angular_dis[0], -math.pi, +math.pi)
+    w_vec_angular_dis[1]  = Limit_Angle(w_vec_angular_dis[1], -math.pi, +math.pi)
+    w_vec_angular_dis[2]  = Limit_Angle(w_vec_angular_dis[2], 0, +2*math.pi)
 
-    a_vec_linear_accel = Convert_Vec_Gravity_Acc_World_To_Acft(w_vec_angular_dis[0], w_vec_angular_dis[1])
+    a_vec_linear_accel    = Convert_Vec_Gravity_Acc_World_To_Acft(w_vec_angular_dis[0], w_vec_angular_dis[1])
     a_vec_linear_velocity = Calc_Integral_Vector(a_vec_linear_velocity, a_vec_linear_accel, dt)
     a_mag_linear_velocity = Calc_Vec_Mag(a_vec_linear_velocity)
-    w_vec_linear_accel = Convert_Vec_Frame_Acft_To_World(a_vec_linear_accel, a_fpa, a_trk)
+    w_vec_linear_accel    = Convert_Vec_Frame_Acft_To_World(a_vec_linear_accel, a_fpa, a_trk)
     w_vec_linear_velocity = Calc_Integral_Vector(w_vec_linear_velocity, w_vec_linear_accel, dt)
     w_mag_linear_velocity = Calc_Vec_Mag(w_vec_linear_velocity)
-    w_vec_linear_dis = Calc_Integral_Vector(w_vec_linear_dis, w_vec_linear_velocity, dt)
+    w_vec_linear_dis      = Calc_Integral_Vector(w_vec_linear_dis, w_vec_linear_velocity, dt)
 
 
     debug_text = \
