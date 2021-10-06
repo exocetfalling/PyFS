@@ -40,8 +40,8 @@ w_vec_angular_accel = [0, 0, 0]
 w_vec_angular_vel = [0, 0, 0]
 
 # [pitch, roll, heading]
-# w_vec_angular_dis = [0, 0, 0]
-w_vec_angular_dis = [-math.pi/2, 0, 0]
+w_vec_angular_dis = [0, 0, 0]
+# w_vec_angular_dis = [-math.pi/2, 0, 0]
 # Controls
 a_elevator_angle_rad = 0
 a_aileron_angle_rad = 0
@@ -88,9 +88,9 @@ screen = pygame.display.set_mode(SIZE, pygame.RESIZABLE)
 clock = pygame.time.Clock()
 
 # Functions
-def Convert_Vec_Frame_Acft_To_World(vec_a_frame, angle_fpa, angle_trk): 
-    vec_rot_fpa = [vec_a_frame[0], vec_a_frame[1] * math.cos(-angle_fpa), vec_a_frame[2] * math.sin(-angle_fpa)]
-    vec_rot_trk = [vec_rot_fpa[0] * math.sin(-angle_trk), vec_rot_fpa[1] * math.cos(-angle_trk), vec_rot_fpa[2]]
+def Convert_Vec_Frame_Acft_To_World(vec_a_frame, angle_pitch, angle_hdg): 
+    vec_rot_fpa = [vec_a_frame[0], vec_a_frame[1] * math.cos(angle_pitch), vec_a_frame[2] * math.sin(angle_pitch)]
+    vec_rot_trk = [vec_rot_fpa[0] * math.sin(angle_hdg), vec_rot_fpa[1] * math.cos(angle_hdg), vec_rot_fpa[2]]
     return vec_rot_trk
 
 def Convert_Vec_Gravity_Acc_World_To_Acft(angle_pitch, angle_roll): 
