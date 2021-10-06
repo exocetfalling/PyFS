@@ -224,7 +224,7 @@ while True:
     a_vec_linear_accel    = Convert_Vec_Gravity_Acc_World_To_Acft(w_vec_angular_dis[0], w_vec_angular_dis[1])
     a_vec_linear_velocity = Calc_Integral_Vector(a_vec_linear_velocity, a_vec_linear_accel, dt)
     a_mag_linear_velocity = Calc_Vec_Mag(a_vec_linear_velocity)
-    w_vec_linear_accel    = Convert_Vec_Frame_Acft_To_World(a_vec_linear_accel, a_fpa, a_trk)
+    w_vec_linear_accel    = Convert_Vec_Frame_Acft_To_World(a_vec_linear_accel, w_vec_angular_dis[0], w_vec_angular_dis[2])
     w_vec_linear_velocity = Calc_Integral_Vector(w_vec_linear_velocity, w_vec_linear_accel, dt)
     w_mag_linear_velocity = Calc_Vec_Mag(w_vec_linear_velocity)
     w_vec_linear_dis      = Calc_Integral_Vector(w_vec_linear_dis, w_vec_linear_velocity, dt)
