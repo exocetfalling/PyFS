@@ -40,8 +40,8 @@ w_vec_angular_accel = [0, 0, 0]
 w_vec_angular_vel = [0, 0, 0]
 
 # [pitch, roll, heading]
-w_vec_angular_dis = [0, 0, 0]
-
+# w_vec_angular_dis = [0, 0, 0]
+w_vec_angular_dis = [-math.pi/2, 0, 0]
 # Controls
 a_elevator_angle_rad = 0
 a_aileron_angle_rad = 0
@@ -127,7 +127,7 @@ def Calc_Airflow_Angle(vel_side, vel_total_mag):
     if (vel_total_mag != 0):
         return -math.asin(vel_side / vel_total_mag)
     else:
-        return 0
+        return 0.0000001
 
 def Calc_Lift_Coeff(angle_alpha_rad):
     
